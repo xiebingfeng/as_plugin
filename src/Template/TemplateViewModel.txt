@@ -1,0 +1,15 @@
+package $packagename
+
+import android.app.Application
+import android.arch.lifecycle.MutableLiveData
+import com.krt.frame.frame.mvvm.BaseViewModel
+$extrapackagename
+class $classNameViewModel(application: Application) : BaseViewModel(application) {
+
+    $contentBefore
+
+    fun loadFirstComingData() {
+        $httpCall
+    }
+    $contentLoadMore
+}

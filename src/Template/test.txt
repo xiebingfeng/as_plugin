@@ -1,0 +1,6 @@
+is_home_module_run_alone=false
+is_login_module_run_alone=false
+is_category_module_run_alone=false
+is_remind_module_run_alone=false
+is_submarine_module_run_alone=true
+is_clue_allocation_module_run_alone=false

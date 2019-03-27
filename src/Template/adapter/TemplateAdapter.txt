@@ -1,0 +1,12 @@
+package $packagename
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseViewHolder
+import com.krt.network.test.TestUrl
+$extrapackagename
+
+class $classNameAdapter : BaseQuickAdapter<TestUrl.TestData, BaseViewHolder>(R.layout.base_item_adapter_view, null) {
+
+    override fun convert(helper: BaseViewHolder, item: TestUrl.TestData) {
+    }
+
+}

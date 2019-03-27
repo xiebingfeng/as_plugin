@@ -1,0 +1,18 @@
+package com.krt.$packageName
+
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.krt.component.routhpath.RouterPath$ModuleNameUp
+import com.krt.frame.app.BaseApp
+import com.krt.frame.app.IModuleService
+
+@Route(path = RouterPath$ModuleNameUp.APPLICATION)
+class $ModuleNameUpModuleApp : BaseApp() {
+
+    override fun initModuleAppService(): IModuleService {
+        return $ModuleNameUpModuleService()
+    }
+
+    override fun initData() {
+    }
+
+}

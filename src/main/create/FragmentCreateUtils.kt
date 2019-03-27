@@ -1,0 +1,326 @@
+package main.create
+
+import com.intellij.openapi.project.Project
+import main.action.DirectLoadUtils
+import main.action.MVVMAction
+import main.config.ProjectConfig
+import main.container.ClassLayout
+import main.container.ContentLayout
+import main.container.HttpCallLayout
+import main.container.ToolBarLayout
+import main.utils.FileIOUtils2
+import main.utils.replaceText
+import main.utils.showCommonDialog
+import main.filetype.KotlinFileType
+import java.lang.StringBuilder
+import main.utils.FileFormatUtils
+
+
+class FragmentCreateUtils(private val project: Project?, private val directLoadUtils: DirectLoadUtils) {
+
+    private var mResultContent = StringBuilder()
+
+    private var mPackageText = StringBuilder()
+    private var mToolBarText = StringBuilder()
+    private var mContentBefore = StringBuilder()
+    private var mContentOnViewCreated = StringBuilder()
+    private var mContentInitClick = StringBuilder()
+    private var mContentFirstLoad = StringBuilder()
+    private var mContentNewInstance = StringBuilder()
+    private var mContentInitViewModel = StringBuilder()
+
+    private var mAnAction: MVVMAction? = null
+
+    fun create(className: String, anAction: MVVMAction,
+               layoutName: String,
+               classLayout: ClassLayout,
+               toolBar: ToolBarLayout,
+               contentLayout: ContentLayout,
+               httpCallContent: HttpCallLayout) {
+        mAnAction = anAction
+
+        mToolBarText.append("R.layout.").append(layoutName)
+        mPackageText.append("import " + directLoadUtils.packageName + ".R\n")
+
+        //从本地文件读取Fragment模板
+        mResultContent.append(FileIOUtils2.readTemplateFile("TemplateFragment.txt", mAnAction))
+
+        //生成内容
+        initToolBarAndCreateXmlLayout(layoutName, className, toolBar)
+        initModuleLiveData(classLayout, httpCallContent, contentLayout)
+        initView(contentLayout, layoutName)
+        initClick(contentLayout)
+        initFirstLoad(contentLayout)
+        initNewInstance(classLayout, className)
+        initLast(className)
+
+        if (ProjectConfig.isDebug) {
+//            showCommonDialog(mResultContent.toString())
+        } else {
+            val fileName = className + "Fragment"
+            val file = directLoadUtils.psiFileFactory!!.createFileFromText("$fileName.kt", KotlinFileType(), mResultContent)
+
+            file.let {
+                val addFile = directLoadUtils.directory?.add(it)
+                FileFormatUtils.format(project, addFile)
+            }
+        }
+    }
+
+    private fun initToolBarAndCreateXmlLayout(layoutName: String,
+                            className: String,
+                            toolBar: ToolBarLayout) {
+        //普通模式下
+        if (toolBar.normalTitleLayout!!.isSelected) {
+            //设置EventBus TODO
+            if (!toolBar.ckEventBus!!.isSelected) {
+                mToolBarText.append(",\nautoCheckEventBus = false")
+            }
+            //设置普通模式
+            mToolBarText.append(",\ntoolBarStyle = ToolBarStyle.NORMAL")
+            //设置标题
+            val middleTitle = toolBar.etTitleName!!.text.toString().trim()
+            mToolBarText.append(",\nmiddleTitle = \"").append(middleTitle).append("\"")
+
+            //默认后退功能
+            if (toolBar.ckBack!!.isSelected) {
+                mToolBarText.append(",\ncustomBackAction = true")
+            }
+            //默认背景色
+            if (toolBar.ckToolBarBackGround!!.isSelected) {
+                mToolBarText.append(",\ncustomToolBarBackGround = true")
+            }
+
+            //标题栏下显示默认横线
+            if (toolBar.ckBottomLine!!.isSelected) {
+                mToolBarText.append(",\ntoolBarBottomLineVisible = true")
+            }
+
+            //右边按钮设置
+            if (toolBar.titleRight!!.isSelected) {
+                if (toolBar.rbRightViewText!!.isSelected) {
+                    mToolBarText.append(",\nrightViewStyle = ToolBarViewStyle.TEXT")
+                }
+                if (toolBar.rbRightViewImage!!.isSelected) {
+                    mToolBarText.append(",\nrightViewStyle = ToolBarViewStyle.ICON")
+                }
+
+                if (toolBar.rightColorWhite!!.isSelected) {
+                    mToolBarText.append(",\nrightViewTextFontColor = getColor(R.color.base_white)")
+                }
+                if (toolBar.rightColorBlack!!.isSelected) {
+                    mToolBarText.append(",\nrightViewTextFontColor = getColor(R.color.base_black)")
+                }
+                if (toolBar.rightColorCustom!!.isSelected) {
+                    mToolBarText.append(",\nrightViewTextFontColor = getColor(R.color.base_white)")
+                }
+                mPackageText.append("import com.krt.frame.frame.toolbar.style.ToolBarViewStyle\n")
+                mPackageText.append("import com.krt.base.ext.getColor\n")
+
+                //获取右按钮显示字
+                val rightViewText = toolBar.rightViewTitle!!.text.toString().trim()
+                if (rightViewText.isNotEmpty()) {
+                    mToolBarText.append(",\nrightViewText = \"").append(rightViewText).append("\"")
+                    mToolBarText.append(",\nrightViewClickListener = {}")
+                }
+            }
+        }
+
+        var layoutContent = ""
+        //是否普通布局
+        if (ProjectConfig.isNormalLayout) {
+            layoutContent = FileIOUtils2.readTemplateFile("/layout/TemplateNormalLayout.txt", mAnAction)
+        } else {
+            layoutContent = FileIOUtils2.readTemplateFile("/layout/TemplateListViewLayout.txt", mAnAction)
+            createListAdapter(className)
+        }
+
+        if (!ProjectConfig.isDebug) {
+            var resDir = directLoadUtils.srcMainDir?.findSubdirectory("res")
+            if (resDir == null) {
+                resDir = directLoadUtils.srcMainDir?.createSubdirectory("res")
+            }
+
+            var layoutDir = resDir?.findSubdirectory("layout")
+            if (layoutDir == null) {
+                layoutDir = resDir?.createSubdirectory("layout")
+            }
+
+            //创建xml文件
+            val xmlFile = directLoadUtils.psiFileFactory?.createFileFromText("$layoutName.xml", KotlinFileType(), layoutContent)
+            xmlFile?.let {
+                val addFile = layoutDir?.add(it)
+                FileFormatUtils.format(project, addFile)
+            }
+        }
+    }
+
+    private fun initModuleLiveData(classLayout: ClassLayout, httpCallContent: HttpCallLayout, contentLayout: ContentLayout) {
+        //是否加载界面动画结束后   再加载数据
+        if (!classLayout.checkAnim!!.isSelected) {
+            mContentInitViewModel.append(" override fun initViewModelLiveData() {\n" +
+                    "        super.initViewModelLiveData()\n" + View_Model_Load_Data + "\n" +
+                    "    }\n")
+        } else {
+            mContentInitViewModel.append("override fun initViewModelLiveDataAfterAnimationEnd() {\n" +
+                    "        super.initViewModelLiveDataAfterAnimationEnd()\n" + View_Model_Load_Data + "\n" +
+                    "    }\n")
+        }
+
+        var viewModelContent = ""
+        if (httpCallContent.cbNetworkEnable!!.isSelected) {
+
+            if (ProjectConfig.isNormalLayout) {
+                viewModelContent = "viewModel?.firstComingLiveData?.observe(this, Observer {\n       })"
+            } else {
+                viewModelContent = "viewModel?.firstComingLiveData?.observe(this, Observer {\n" +
+                        "            mAdapter.setNewData(it)\n" +
+                        "        })"
+
+                if (contentLayout.ckLoadMore!!.isSelected) {
+                    viewModelContent += "\n\n viewModel?.listMoreLiveData?.observe(this, Observer {\n" +
+                            "            it?.let {\n" +
+                            "                mAdapter.addData(it)\n" +
+                            "            }\n" +
+                            "        })"
+                }
+            }
+        }
+
+        mContentInitViewModel.replace(mContentInitViewModel.indexOf(View_Model_Load_Data), mContentInitViewModel.indexOf(View_Model_Load_Data) + View_Model_Load_Data.length, viewModelContent)
+    }
+
+    private fun initView(contentLayout: ContentLayout,
+                         layoutName: String) {
+        //普通布局  或  列表
+        if (!contentLayout.normalLayout!!.isSelected) {
+            var content = "\n" + FileIOUtils2.readTemplateFile("/view/TemplateListView.txt", mAnAction)
+            mPackageText.append("import kotlinx.android.synthetic.main.").append(layoutName).append(".*\n")
+            mPackageText.append("import com.krt.base.ext.initSwipeRefreshLayout\n")
+
+            val listParams = StringBuilder()
+
+            //列表模式下   初始化后是否自动刷新
+            if (!contentLayout.autoRefresh!!.isSelected) {
+                listParams.append(", autoStartRefresh = false")
+            }
+
+            //列表模式下   是否添加分割线
+            if (contentLayout.itemDecoration!!.isSelected) {
+                listParams.append(", itemDecorationEnabled = true")
+            }
+
+            //列表模式下  数据为空时，是否要显示数据为空的提示
+            if (!contentLayout.dataEmpty!!.isSelected) {
+                listParams.append(", isEmptyViewEnabled = false")
+            }
+
+            //列表模式下  加载更多功能
+            if (contentLayout.ckLoadMore!!.isSelected) {
+                listParams.append(", actionLoadMore = {\n" +
+                        "            viewModel?.loadMoreData()\n" +
+                        "        }")
+            }
+
+            content = content.replace("\$listParams", listParams.toString())
+
+            mContentOnViewCreated.append(content + "\n")
+        }
+    }
+
+    private fun initClick(contentLayout: ContentLayout) {
+        if (contentLayout.ckClickMethod!!.isSelected) {
+            mContentInitClick.append(" override fun initViewClickListener() {\n" +
+                    "        super.initViewClickListener()\n" +
+                    "    }").append("\n")
+        }
+    }
+
+    private fun initFirstLoad(contentLayout: ContentLayout) {
+        //普通布局  或  列表
+        if (contentLayout.normalLayout!!.isSelected) {
+            val content = FileIOUtils2.readTemplateFile("/view/TemplateNormalView.txt", mAnAction)
+            mContentFirstLoad.append(content + "\n")
+        }
+    }
+
+    //通过  newInstance()方法创建Fragment
+    private fun initNewInstance(classLayout: ClassLayout, className: String) {
+        if (classLayout.newInstanceCB!!.isSelected) {
+            val content = FileIOUtils2.readTemplateFile("/instance/TimplateNewInstance.txt", mAnAction)
+            content.replace(Class_Name, className)
+            mContentNewInstance.append("\n" + content)
+
+            var pairAdd = ""
+            if (classLayout.pairAdd!!.isSelected) {
+                mPackageText.append("import org.jetbrains.anko.bundleOf\n")
+                pairAdd += "\nfragment.arguments = bundleOf(Pair(\"\", \"\"))"
+            }
+            mContentNewInstance.replace(mContentNewInstance.indexOf("\$pair"), mContentNewInstance.indexOf("\$pair") + 5, pairAdd)
+        }
+    }
+
+    private fun createListAdapter(className: String) {
+        val adapterDeclare = "private lateinit var mAdapter: " + className + "Adapter"
+        mContentBefore.append(adapterDeclare)
+        mPackageText.append("import " + directLoadUtils.packageDeclare + ".adapter." + className + "Adapter\n")
+
+        if (!ProjectConfig.isDebug) {
+            var adapterDir = directLoadUtils.directory?.findSubdirectory("adapter")
+            if (adapterDir == null) {
+                adapterDir = directLoadUtils.directory?.createSubdirectory("adapter")
+            }
+
+            val adapterFile = adapterDir?.findFile(className + "Adapter")
+            if (adapterFile != null) {
+                showCommonDialog("Adapter重复")
+                return
+            }
+
+            var adapterContent = FileIOUtils2.readTemplateFile("/adapter/TemplateAdapter.txt", mAnAction)
+            adapterContent = adapterContent
+                    .replace(Extra_Package_Name, "import " + directLoadUtils.packageName + ".R\n")
+                    .replace(Package_Name, directLoadUtils.packageDeclare + ".adapter")
+                    .replace(Class_Name, className)
+
+            val file = directLoadUtils.psiFileFactory?.createFileFromText(className + "Adapter.kt", KotlinFileType(), adapterContent)
+            file?.let {
+                val addFile = adapterDir?.add(it)
+                FileFormatUtils.format(project, addFile)
+            }
+        }
+    }
+
+    private fun initLast(className: String) {
+        if (mContentBefore.isNotEmpty()) {
+            mContentBefore.insert(0, "\n")
+        }
+
+        mResultContent.replaceText(Extra_Package_Name, mPackageText)
+                .replaceText(Package_Name, directLoadUtils.packageDeclare)
+                .replaceText(Tool_Bar, mToolBarText)
+                .replaceText(Content_Before, mContentBefore)
+                .replaceText(Content_On_View_Created, mContentOnViewCreated)
+                .replaceText(Content_New_Instance, mContentNewInstance)
+                .replaceText(Content_Init_View_Model, mContentInitViewModel)
+                .replaceText(Content_Init_Click, mContentInitClick)
+                .replaceText(Content_Init_First_Load, mContentFirstLoad)
+
+        mResultContent = StringBuilder(mResultContent.toString().replace(Class_Name, className))
+    }
+
+    companion object {
+        private const val Extra_Package_Name = "\$extrapackagename"
+        private const val Package_Name = "\$packagename"
+        private const val Tool_Bar = "\$toolbar"
+        private const val Content_Before = "\$contentBefore"
+        private const val Content_On_View_Created = "\$initView"
+        private const val Content_New_Instance = "\$contentNewInstance"
+        private const val Content_Init_View_Model = "\$contentInitViewModel"
+        private const val Content_Init_Click = "\$contentInitClick"
+        private const val Class_Name = "\$className"
+        private const val View_Model_Load_Data = "\$viewModelLoadData"
+        private const val Content_Init_First_Load = "\$contentInitFirstLoad "
+    }
+
+}

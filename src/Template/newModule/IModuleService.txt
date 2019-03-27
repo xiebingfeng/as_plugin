@@ -1,0 +1,7 @@
+package com.krt.component.service
+
+import com.krt.frame.app.IModuleService
+
+interface I$ModuleNameUpModuleService : IModuleService {
+
+}
