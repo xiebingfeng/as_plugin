@@ -28,7 +28,7 @@ object HttpCoreUtils {
             httpCallContent.append("$params\nhttpPost<String>(\$httpParams)")
         }
 
-        if (httpCallLayout.ckToListData?.isSelected == true) {
+        if (httpCallLayout.ckToListData?.isSelected == true || httpCallLayout.ckToObjectData?.isSelected == true) {
             httpCallContent.replaceText("String", "TestUrl.TestData")
         }
 

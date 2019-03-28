@@ -66,7 +66,7 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
 
         var dataContent = ""
         if (ProjectConfig.isNormalLayout) {
-            mContentBefore.append("val firstComingLiveData = MutableLiveData<String>()")
+            mContentBefore.append("val firstComingLiveData = MutableLiveData<TestUrl.TestData>()")
             dataContent = "firstComingLiveData.value = it"
         } else {
             mContentBefore.append("val firstComingLiveData = MutableLiveData<List<TestUrl.TestData>>()")
