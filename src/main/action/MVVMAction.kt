@@ -66,7 +66,7 @@ class MVVMAction : AnAction() {
         mClassLayout?.setBounds(0, 0, ClassLayout.LAYOUT_WIDTH, 190)
 
         mToolBarLayout = ToolBarLayout()
-        mToolBarLayout?.setBounds(0, 200, ToolBarLayout.LAYOUT_WIDTH, 310)
+        mToolBarLayout?.setBounds(0, 200, ToolBarLayout.LAYOUT_WIDTH, 340)
 
         mContentLayout = ContentLayout()
         mContentLayout?.setBounds(300, 0, ContentLayout.LAYOUT_WIDTH, 280)

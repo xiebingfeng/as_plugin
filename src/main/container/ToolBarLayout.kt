@@ -16,6 +16,7 @@ class ToolBarLayout : JPanel() {
     var etTitleName: JTextField? = null
     var ckBack: JCheckBox? = null
     var ckToolBarBackGround: JCheckBox? = null
+    var ckMainBackGround: JCheckBox? = null
     var ckBottomLine: JCheckBox? = null
     var ckEventBus: JCheckBox? = null
 
@@ -49,7 +50,9 @@ class ToolBarLayout : JPanel() {
         etTitleName?.preferredSize = JBDimension(200, 30)
 
         ckBack = JCheckBox("默认后退功能")
-        ckToolBarBackGround = JCheckBox("默认背景色")
+        ckToolBarBackGround = JCheckBox("默认标题栏背景色")
+        ckMainBackGround = JCheckBox("默认主背景色")
+        ckMainBackGround?.preferredSize = JBDimension(200, 30)
 
         ckBottomLine = JCheckBox("标题栏底下显示默认横线")
         ckEventBus = JCheckBox("自动检测 注册和销毁EventBus(默认是的)", true)
@@ -88,6 +91,7 @@ class ToolBarLayout : JPanel() {
         container.add(ckBack)
         container.add(ckToolBarBackGround)
         container.add(ckBottomLine)
+        container.add(ckMainBackGround)
         container.add(ckEventBus)
     }
 

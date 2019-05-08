@@ -38,7 +38,7 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
         replaceLast(className)
 
         if (ProjectConfig.isDebug) {
-            showCommonDialog(mResultContent.toString())
+//            showCommonDialog(mResultContent.toString())
         } else {
             val fileName = className + "ViewModel"
             val file = directLoadUtils.psiFileFactory?.createFileFromText("$fileName.kt", KotlinFileType(), mResultContent)

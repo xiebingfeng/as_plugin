@@ -3,7 +3,7 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         mAdapter = &classNameAdapter(this)
 
-        initSwipeRefreshLayout(mAdapter, base_lceRefreshView, base_lceRecyclerView)
+        initSwipeRefreshLayout(mAdapter, frame_lceRefreshView, frame_lceRecyclerView)
         {
             viewModel?.loadData()
         }

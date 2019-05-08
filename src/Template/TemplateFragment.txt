@@ -11,7 +11,7 @@ class $classNameFragment : BaseLceFragment<$classNameViewModel>(){
     $contentBefore
     override fun initToolBarConfig() = ToolBarConfig(
           $toolbar
-    )
+    )$toolCustom
     $contentInitViewModel
     override fun initView() {$initView
     }

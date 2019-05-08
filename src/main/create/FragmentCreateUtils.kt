@@ -22,6 +22,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
 
     private var mPackageText = StringBuilder()
     private var mToolBarText = StringBuilder()
+    private var mToolBarCustom = StringBuilder()
     private var mContentBefore = StringBuilder()
     private var mContentOnViewCreated = StringBuilder()
     private var mContentInitClick = StringBuilder()
@@ -55,7 +56,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         initLast(className)
 
         if (ProjectConfig.isDebug) {
-//            showCommonDialog(mResultContent.toString())
+            showCommonDialog(mResultContent.toString())
         } else {
             val fileName = className + "Fragment"
             val file = directLoadUtils.psiFileFactory!!.createFileFromText("$fileName.kt", KotlinFileType(), mResultContent)
@@ -68,8 +69,8 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
     }
 
     private fun initToolBarAndCreateXmlLayout(layoutName: String,
-                            className: String,
-                            toolBar: ToolBarLayout) {
+                                              className: String,
+                                              toolBar: ToolBarLayout) {
         //普通模式下
         if (toolBar.normalTitleLayout!!.isSelected) {
             //设置EventBus TODO
@@ -84,11 +85,25 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
 
             //默认后退功能
             if (toolBar.ckBack!!.isSelected) {
-                mToolBarText.append(",\ncustomBackAction = true")
+                if (mToolBarCustom.isNotEmpty()) {
+                    mToolBarCustom.append(",\n")
+                }
+                mToolBarCustom.append("customBackPop = true")
             }
-            //默认背景色
+            //默认ToolBar背景色
             if (toolBar.ckToolBarBackGround!!.isSelected) {
-                mToolBarText.append(",\ncustomToolBarBackGround = true")
+                if (mToolBarCustom.isNotEmpty()) {
+                    mToolBarCustom.append(",\n")
+                }
+                mToolBarCustom.append("customToolBarBackGround = true")
+            }
+
+            //默认主背景色
+            if (toolBar.ckMainBackGround!!.isSelected) {
+                if (mToolBarCustom.isNotEmpty()) {
+                    mToolBarCustom.append(",\n")
+                }
+                mToolBarCustom.append("customBackground = true")
             }
 
             //标题栏下显示默认横线
@@ -124,6 +139,11 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
                     mToolBarText.append(",\nrightViewClickListener = {}")
                 }
             }
+        }
+
+        if (mToolBarCustom.isNotEmpty()) {
+            mPackageText.append("import com.krt.business.ext.toCustom\n")
+            mToolBarCustom.insert(0, ".toCustom(").append(")\n")
         }
 
         var layoutContent = ""
@@ -299,6 +319,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         mResultContent.replaceText(Extra_Package_Name, mPackageText)
                 .replaceText(Package_Name, directLoadUtils.packageDeclare)
                 .replaceText(Tool_Bar, mToolBarText)
+                .replaceText(Tool_Bar_Custom, mToolBarCustom)
                 .replaceText(Content_Before, mContentBefore)
                 .replaceText(Content_On_View_Created, mContentOnViewCreated)
                 .replaceText(Content_New_Instance, mContentNewInstance)
@@ -313,6 +334,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         private const val Extra_Package_Name = "\$extrapackagename"
         private const val Package_Name = "\$packagename"
         private const val Tool_Bar = "\$toolbar"
+        private const val Tool_Bar_Custom = "\$toolCustom"
         private const val Content_Before = "\$contentBefore"
         private const val Content_On_View_Created = "\$initView"
         private const val Content_New_Instance = "\$contentNewInstance"

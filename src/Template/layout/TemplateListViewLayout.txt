@@ -4,12 +4,12 @@
     android:layout_height="match_parent">
 
     <com.krt.frame.pullrecyclerview.AutoSwipeRefreshView
-        android:id="@+id/base_lceRefreshView"
+        android:id="@+id/frame_lceRefreshView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/base_lceRecyclerView"
+            android:id="@+id/frame_lceRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:overScrollMode="never" />
