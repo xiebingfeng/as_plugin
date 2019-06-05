@@ -20,10 +20,14 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
     private var mContentBefore = StringBuilder()
     private var mContentLoadMore = StringBuilder()
 
+    private var isListMoreEnabled = false
+
     fun create(className: String, anAction: AnAction, httpCallContent: HttpCallLayout, contentLayout: ContentLayout) {
         val tempFileName = "TemplateViewModel.txt"
         mResultContent.append(FileIOUtils2.readTemplateFile(tempFileName, anAction)
                 .replace("\$packagename", directLoadUtils.packageDeclare))
+
+        isListMoreEnabled = contentLayout.ckLoadMore!!.isSelected
 
         if (ProjectConfig.isNormalLayout) {
             httpCallContent.ckToObjectData?.isSelected = true
@@ -38,7 +42,7 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
         replaceLast(className)
 
         if (ProjectConfig.isDebug) {
-//            showCommonDialog(mResultContent.toString())
+            showCommonDialog(mResultContent.toString())
         } else {
             val fileName = className + "ViewModel"
             val file = directLoadUtils.psiFileFactory?.createFileFromText("$fileName.kt", KotlinFileType(), mResultContent)
@@ -59,24 +63,41 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
             mPackageText.append("import com.krt.network.httpPost\n")
         }
 
-        mHttpCallContent.append(HttpCoreUtils.getHttpCallCommon(httpCallLayout))
+        mHttpCallContent.append(HttpCoreUtils.getHttpCallCommon(httpCallLayout, isListMoreEnabled))
         if (mHttpCallContent.indexOf("lce =") > 0) {
             mPackageText.append("import com.krt.network.base.LCEParams\n")
         }
 
         var dataContent = ""
         if (ProjectConfig.isNormalLayout) {
-            mContentBefore.append("val firstComingLiveData = MutableLiveData<TestUrl.TestData>()")
-            dataContent = "firstComingLiveData.value = it"
+            mContentBefore.append("val firstComingLiveData = MutableLiveData<TestUrl.TestObject>()")
+            dataContent = "firstComingLiveData.value = it\n"
         } else {
-            mContentBefore.append("val firstComingLiveData = MutableLiveData<List<TestUrl.TestData>>()")
-            dataContent = "firstComingLiveData.value = it"
+            mContentBefore.append("val firstComingLiveData = MutableLiveData<List<TestUrl.TestObject>>()")
+            dataContent = "firstComingLiveData.value = it?.records\n"
+            if (isListMoreEnabled) {
+                dataContent += "    checkIsPageEnd(it)\n"
+            }
 
-            if (contentLayout.ckLoadMore!!.isSelected) {
-                mContentBefore.append("\n\nval listMoreLiveData = MutableLiveData<List<TestUrl.TestData>>()")
-                val loadMoreData = "listMoreLiveData.value = it"
-                mContentLoadMore.append("fun loadMoreData() {\n" + HttpCoreUtils.getHttpCallCommon(httpCallLayout) + "\n}")
+            //加载更多
+            if (isListMoreEnabled) {
+                mContentBefore.insert(0, "    private var page = 1\n\nval isLastPageLiveData = MutableLiveData<Boolean>()\n\n")
+
+
+                mContentBefore.append("\n\nval listMoreLiveData = MutableLiveData<List<TestUrl.TestObject>>()")
+                var loadMoreData = "listMoreLiveData.value = it?.records\n"
+                if (isListMoreEnabled) {
+                    loadMoreData += "    checkIsPageEnd(it)\n"
+                }
+
+                mContentLoadMore.append("fun loadMoreData() {\n" + HttpCoreUtils.getHttpCallCommon(httpCallLayout, isListMoreEnabled, true) + "\n}")
                 mContentLoadMore.replace(mContentLoadMore.indexOf("\$dataContent"), mContentLoadMore.indexOf("\$dataContent") + 12, loadMoreData)
+
+                mContentLoadMore.append("\n\n  private fun checkIsPageEnd(it: TestUrl.TestList?) {\n" +
+                        "        if (page >= it?.pages ?: 0) {\n" +
+                        "            isLastPageLiveData.value = true\n" +
+                        "        }\n" +
+                        "    }")
             }
         }
 

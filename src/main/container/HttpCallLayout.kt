@@ -64,7 +64,7 @@ class HttpCallLayout(val createMethod: Boolean, val isDataTypeVisible: Boolean) 
 
             etUrl = JTextField()
             if (ProjectConfig.isDebug) {
-                etUrl!!.text = "http://www.baidu.com"
+//                etUrl!!.text = "http://www.baidu.com"
             }
 
             add(etUrl)

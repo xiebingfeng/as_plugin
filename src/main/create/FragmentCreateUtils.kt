@@ -56,7 +56,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         initLast(className)
 
         if (ProjectConfig.isDebug) {
-            showCommonDialog(mResultContent.toString())
+//            showCommonDialog(mResultContent.toString())
         } else {
             val fileName = className + "Fragment"
             val file = directLoadUtils.psiFileFactory!!.createFileFromText("$fileName.kt", KotlinFileType(), mResultContent)
@@ -193,6 +193,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
             if (ProjectConfig.isNormalLayout) {
                 viewModelContent = "viewModel?.firstComingLiveData?.observe(this, Observer {\n       })"
             } else {
+                mPackageText.append("import com.krt.frame.ext.obs\n")
                 viewModelContent = "viewModel?.firstComingLiveData?.observe(this, Observer {\n" +
                         "            mAdapter.setNewData(it)\n" +
                         "        })"
@@ -203,6 +204,10 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
                             "                mAdapter.addData(it)\n" +
                             "            }\n" +
                             "        })"
+
+                    viewModelContent += "\n\n viewModel?.isLastPageLiveData?.obs(this) {\n" +
+                            "            mAdapter.loadMoreEnd(true)\n" +
+                            "        }\n"
                 }
             }
         }

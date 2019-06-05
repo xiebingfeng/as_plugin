@@ -6,7 +6,7 @@ import java.lang.StringBuilder
 
 object HttpCoreUtils {
 
-    fun getHttpCallCommon(httpCallLayout: HttpCallLayout): String {
+    fun getHttpCallCommon(httpCallLayout: HttpCallLayout, isListMoreEnabled: Boolean? = null, isListMore: Boolean? = null): String {
         val httpCallContent = StringBuilder()
         val params = StringBuilder()
 
@@ -15,21 +15,41 @@ object HttpCoreUtils {
             when {
                 httpCallLayout.ckJustReturnData?.isSelected == true -> url = "TestUrl.objectData"
                 httpCallLayout.ckToObjectData?.isSelected == true -> url = "TestUrl.objectData"
-                httpCallLayout.ckToListData?.isSelected == true -> url = "TestUrl.listData"
+                httpCallLayout.ckToListData?.isSelected == true -> {
+                    if (isListMore == true) url = "TestUrl.listData2" else url = "TestUrl.listData1"
+                }
+            }
+        }
+
+        if (isListMoreEnabled == true) {
+            if (isListMore == true) {
+                params.append(" page++\n\n")
+            } else {
+                params.append(" page = 1\n\n")
             }
         }
 
         val isGet = httpCallLayout.rtGetRequest!!.isSelected
         if (isGet) {
-            params.append("val params = listOf(\"\", \"\").toParams()\n")
+            if (isListMoreEnabled == true) {
+                params.append("val params = listOf(\"page\", \"page\").toParams()\n")
+            } else {
+                params.append("val params = listOf(\"\", \"\").toParams()\n")
+            }
             httpCallContent.append("$params\nhttpGet<String>(\$httpParams)")
         } else {
-            params.append("val params = listOf(\"\", \"\").toJson()\n")
+            if (isListMoreEnabled == true) {
+                params.append("val params = listOf(\"page\", \"page\").toJson()\n")
+            } else {
+                params.append("val params = listOf(\"\", \"\").toJson()\n")
+            }
             httpCallContent.append("$params\nhttpPost<String>(\$httpParams)")
         }
 
-        if (httpCallLayout.ckToListData?.isSelected == true || httpCallLayout.ckToObjectData?.isSelected == true) {
-            httpCallContent.replaceText("String", "TestUrl.TestData")
+        if (httpCallLayout.ckToObjectData?.isSelected == true) {
+            httpCallContent.replaceText("String", "TestUrl.TestObject")
+        } else if (httpCallLayout.ckToListData?.isSelected == true) {
+            httpCallContent.replaceText("String", "TestUrl.TestList")
         }
 
         //////////////前面是基础结构，下面开始配置参数
@@ -81,7 +101,7 @@ object HttpCoreUtils {
         when {
             httpCallLayout.ckJustReturnData?.isSelected == true -> httpCallContent.append("{}")
             httpCallLayout.ckToObjectData?.isSelected == true -> httpCallContent.append(".toObject {\n\$dataContent}")
-            httpCallLayout.ckToListData?.isSelected == true -> httpCallContent.append(".toList {\n\$dataContent}")
+            httpCallLayout.ckToListData?.isSelected == true -> httpCallContent.append(".toObject {\n\$dataContent}")
         }
 
         //如果要增加方法名的话，即以  方法  的形式呈现
