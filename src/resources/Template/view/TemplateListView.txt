@@ -1,0 +1,6 @@
+        mAdapter = $classNameAdapter()
+
+        initSwipeRefreshLayout(mAdapter, frame_lceRefreshView, frame_lceRecyclerView$listParams)
+        {
+            viewModel?.loadFirstComingData()
+        }

@@ -1,0 +1,19 @@
+package $packagename
+import android.arch.lifecycle.Observer
+import android.os.Bundle
+import android.view.View
+import com.krt.frame.frame.fragment.BaseLceFragment
+import com.krt.frame.frame.toolbar.ToolBarConfig
+import com.krt.frame.frame.toolbar.style.ToolBarStyle
+$extrapackagename
+
+class $classNameFragment : BaseLceFragment<$classNameViewModel>(){
+    $contentBefore
+    override fun initToolBarConfig() = ToolBarConfig(
+          $toolbar
+    )$toolCustom
+    $contentInitViewModel
+    override fun initView() {$initView
+    }
+    $contentInitClick $contentInitFirstLoad $contentNewInstance
+}

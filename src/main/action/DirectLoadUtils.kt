@@ -13,6 +13,7 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import org.w3c.dom.Element
 import main.utils.showCommonDialog
+import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
@@ -52,7 +53,7 @@ class DirectLoadUtils {
                     val directory: PsiDirectory? =
                             if (navigatable is PsiDirectory) {
                                 srcMainDir = navigatable
-                                while (!srcMainDir.toString().endsWith("src/main")) {
+                                while (!srcMainDir.toString().endsWith("src" + File.separator + "main")) {
                                     srcMainDir = srcMainDir?.parentDirectory
                                     if (srcMainDir == null) {
                                         return@let
@@ -100,9 +101,9 @@ class DirectLoadUtils {
             packageFilePath = directoryStr.subSequence(directoryStr.indexOf(":") + 1, directoryStr.length).toString()
 
             projectBaseFilePath = directoryStr.subSequence(directoryStr.indexOf(":") + 1,
-                    directoryStr.indexOf("/src/main")).toString()
+                    directoryStr.indexOf(File.separator + "src" + File.separator + "main")).toString()
 
-            val a = "$projectBaseFilePath/src/main/AndroidManifest.xml"
+            val a = "$projectBaseFilePath" + File.separator + "src" + File.separator + "main" + File.separator + "AndroidManifest.xml"
             val doc = db.parse(a)
             val nodeList = doc.getElementsByTagName("manifest")
             for (i in 0 until nodeList.length) {

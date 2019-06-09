@@ -1,0 +1,10 @@
+override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        mAdapter = &classNameAdapter(this)
+
+        initSwipeRefreshLayout(mAdapter, frame_lceRefreshView, frame_lceRecyclerView)
+        {
+            viewModel?.loadData()
+        }
+    }

@@ -1,0 +1,9 @@
+package com.krt.component.routhpath
+
+//$ModuleRemark
+interface RouterPath$ModuleNameUp {
+    companion object {
+        const val TEST_ACTIVITY = "/$packageName/test_activity"
+        const val APPLICATION = "/$packageName/application"
+    }
+}

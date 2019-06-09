@@ -1,0 +1,8 @@
+companion object {
+
+        fun newInstance(): $classNameFragment {
+            val fragment = $classNameFragment()$pair
+            return fragment
+        }
+
+    }
