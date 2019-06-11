@@ -59,8 +59,8 @@ class MVVMAction : AnAction() {
     private fun showDialog() {
         val jDialog = JDialog()
         jDialog.title = "KRT"
-        jDialog.setSize(ClassLayout.LAYOUT_WIDTH + ContentLayout.LAYOUT_WIDTH + HttpCallLayout.LAYOUT_WIDTH, ClassLayout.LAYOUT_HEIGHT + ToolBarLayout.LAYOUT_HEIGHT)
-        jDialog.setLocation(FONT_SIZE * 15, FONT_SIZE * 10)
+        jDialog.setSize(ClassLayout.LAYOUT_WIDTH + ContentLayout.LAYOUT_WIDTH + HttpCallLayout.LAYOUT_WIDTH, ClassLayout.LAYOUT_HEIGHT + ToolBarLayout.LAYOUT_HEIGHT+50)
+        jDialog.setLocation(FONT_SIZE * 14, FONT_SIZE * 14)
         jDialog.layout = null
 
         mClassLayout = ClassLayout()

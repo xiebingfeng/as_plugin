@@ -40,9 +40,8 @@ class ClassLayout : JPanel() {
         val tvLayoutName = JLabel("布局名：")
         tvLayoutName.boldStyle()
 
-//        tvLayoutName.setBounds(0, (FONT_SIZE * 2.8).toInt(), FONT_SIZE * 7, FONT_SIZE * 3)
         etLayoutName = JTextField("")
-        etLayoutName?.preferredSize = JBDimension(FONT_SIZE * 11, (FONT_SIZE * 2.2).toInt())
+        etLayoutName?.preferredSize = JBDimension(FONT_SIZE * 11, (FONT_SIZE * 2).toInt())
 
         if (ProjectConfig.isDebug) {
             etClassName?.text = "UserName"
@@ -79,7 +78,7 @@ class ClassLayout : JPanel() {
 
     companion object {
         const val LAYOUT_WIDTH = FONT_SIZE * 22
-        const val LAYOUT_HEIGHT = FONT_SIZE * 17
+        const val LAYOUT_HEIGHT = FONT_SIZE * 14
     }
 
 }

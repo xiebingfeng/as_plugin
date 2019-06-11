@@ -113,7 +113,7 @@ class ToolBarLayout : JPanel() {
 
         rbRightViewText = JRadioButton("文字", true)
         rbRightViewImage = JRadioButton("图片按钮")
-        rbRightViewImage?.preferredSize = JBDimension(FONT_SIZE * 14, (FONT_SIZE * 2.1).toInt())
+        rbRightViewImage?.preferredSize = JBDimension(FONT_SIZE * 13, (FONT_SIZE * 2.1).toInt())
         val groupRight = ButtonGroup()
         groupRight.add(rbRightViewText?.toCustomSize())
         groupRight.add(rbRightViewImage?.toCustomSize())
