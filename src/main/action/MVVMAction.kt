@@ -13,6 +13,7 @@ import main.create.ActivityCreateUtils
 import main.create.FragmentCreateUtils
 import main.create.ViewModelCreateUtils
 import main.executeCouldRollBackAction
+import main.utils.FONT_SIZE
 import main.utils.showCommonDialog
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -58,21 +59,21 @@ class MVVMAction : AnAction() {
     private fun showDialog() {
         val jDialog = JDialog()
         jDialog.title = "KRT"
-        jDialog.setSize(1020, 600)
-        jDialog.setLocation(200, 200)
+        jDialog.setSize(ClassLayout.LAYOUT_WIDTH + ContentLayout.LAYOUT_WIDTH + HttpCallLayout.LAYOUT_WIDTH, ClassLayout.LAYOUT_HEIGHT + ToolBarLayout.LAYOUT_HEIGHT)
+        jDialog.setLocation(FONT_SIZE * 15, FONT_SIZE * 10)
         jDialog.layout = null
 
         mClassLayout = ClassLayout()
-        mClassLayout?.setBounds(0, 0, ClassLayout.LAYOUT_WIDTH, 190)
+        mClassLayout?.setBounds(0, 0, ClassLayout.LAYOUT_WIDTH, ClassLayout.LAYOUT_HEIGHT)
 
         mToolBarLayout = ToolBarLayout()
-        mToolBarLayout?.setBounds(0, 200, ToolBarLayout.LAYOUT_WIDTH, 340)
+        mToolBarLayout?.setBounds(0, ClassLayout.LAYOUT_HEIGHT, ToolBarLayout.LAYOUT_WIDTH, ToolBarLayout.LAYOUT_HEIGHT)
 
         mContentLayout = ContentLayout()
-        mContentLayout?.setBounds(300, 0, ContentLayout.LAYOUT_WIDTH, 280)
+        mContentLayout?.setBounds(ClassLayout.LAYOUT_WIDTH, 0, ContentLayout.LAYOUT_WIDTH, FONT_SIZE * 20)
 
         mHttpCallContent = HttpCallLayout(false, false)
-        mHttpCallContent?.setBounds(700, 0, HttpCallLayout.LAYOUT_WIDTH, 400)
+        mHttpCallContent?.setBounds(ClassLayout.LAYOUT_WIDTH + ContentLayout.LAYOUT_WIDTH, 0, HttpCallLayout.LAYOUT_WIDTH, FONT_SIZE * 28)
 
         jDialog.add(mClassLayout)
         jDialog.add(mToolBarLayout)
@@ -85,7 +86,7 @@ class MVVMAction : AnAction() {
 
     private fun initBtnViews(jdDialog: JDialog) {
         val btnSpannedFile = JButton("生成文件")
-        btnSpannedFile.setBounds(830, 520, 130, 40)
+        btnSpannedFile.setBounds(FONT_SIZE * 60, FONT_SIZE * 37, FONT_SIZE * 9, (FONT_SIZE * 3).toInt())
         btnSpannedFile.addActionListener {
             mClassName = mClassLayout?.etClassName!!.text
             if (mClassName.isEmpty()) {
@@ -116,7 +117,7 @@ class MVVMAction : AnAction() {
         }
 
         val btnCancel = JButton("取消")
-        btnCancel.setBounds(700, 520, 130, 40)
+        btnCancel.setBounds(FONT_SIZE * 50, FONT_SIZE * 37, FONT_SIZE * 9, FONT_SIZE * 3)
         btnCancel.addActionListener {
             jdDialog.isVisible = false
         }

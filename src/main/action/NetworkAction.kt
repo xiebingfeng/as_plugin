@@ -11,6 +11,7 @@ import main.container.HttpCallLayout
 import main.create.HttpCoreUtils
 import main.executeAfterTime
 import main.executeCouldRollBackAction
+import main.utils.FONT_SIZE
 import main.utils.FileFormatUtils
 import main.utils.showCommonDialog
 
@@ -39,12 +40,12 @@ class NetworkAction : AnAction() {
     private fun showDialog() {
         val jDialog = JDialog()
         jDialog.title = "KRT"
-        jDialog.setSize(HttpCallLayout.LAYOUT_WIDTH, 500)
-        jDialog.setLocation(400, 200)
+        jDialog.setSize(HttpCallLayout.LAYOUT_WIDTH, FONT_SIZE * 37)
+        jDialog.setLocation(FONT_SIZE * 30, FONT_SIZE * 14)
         jDialog.layout = null
 
         mHttpCallLayout = HttpCallLayout(true, true)
-        mHttpCallLayout?.setBounds(0, 0, HttpCallLayout.LAYOUT_WIDTH, 400)
+        mHttpCallLayout?.setBounds(0, 0, HttpCallLayout.LAYOUT_WIDTH, FONT_SIZE * 28)
 
         jDialog.add(mHttpCallLayout)
         initBtnViews(jDialog)
@@ -53,7 +54,7 @@ class NetworkAction : AnAction() {
 
     private fun initBtnViews(jdDialog: JDialog) {
         val btnSpannedFile = JButton("生成方法")
-        btnSpannedFile.setBounds(110, 430, 100, 40)
+        btnSpannedFile.setBounds((FONT_SIZE * 7.8).toInt(), FONT_SIZE * 31, (FONT_SIZE * 7.1).toInt(), (FONT_SIZE * 2.8).toInt())
         btnSpannedFile.addActionListener {
             if (ProjectConfig.isDebug) {
                 show()
@@ -66,7 +67,7 @@ class NetworkAction : AnAction() {
         }
 
         val btnCancel = JButton("取消")
-        btnCancel.setBounds(0, 430, 100, 40)
+        btnCancel.setBounds(0, FONT_SIZE * 31, (FONT_SIZE * 7.1).toInt(), (FONT_SIZE * 2.8).toInt())
         btnCancel.addActionListener {
             jdDialog.isVisible = false
         }

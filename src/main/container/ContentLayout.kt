@@ -2,7 +2,9 @@ package main.container
 
 import com.intellij.util.ui.JBDimension
 import main.config.ProjectConfig
+import main.utils.FONT_SIZE
 import main.utils.boldStyle
+import main.utils.toCustomSize
 import java.awt.Color
 import java.awt.FlowLayout
 import javax.swing.*
@@ -27,18 +29,18 @@ class ContentLayout : JPanel() {
 
         val title = JLabel("布局设置")
         title.boldStyle()
-        title.preferredSize = JBDimension(LAYOUT_WIDTH, 30)
+        title.preferredSize = JBDimension(LAYOUT_WIDTH, (FONT_SIZE * 2.1).toInt())
 
         ckClickMethod = JCheckBox("重写点击函数(就是把点击功能放在一个地方集中处理)", true)
 
 
         normalLayout = JRadioButton("普通布局", true)
         listLayout = JRadioButton("列表布局")
-        listLayout?.preferredSize = JBDimension(200, 30)
+        listLayout?.preferredSize = JBDimension(FONT_SIZE * 14, (FONT_SIZE * 2.2).toInt())
 
         val group = ButtonGroup()
-        group.add(normalLayout)
-        group.add(listLayout)
+        group.add(normalLayout?.toCustomSize())
+        group.add(listLayout?.toCustomSize())
 
         ckLoadMore = JCheckBox("列表启动加载更多模式")
         autoRefresh = JCheckBox("列表模式下：初始化后是否自动刷新(默认是自动刷新的)", true)
@@ -60,20 +62,20 @@ class ContentLayout : JPanel() {
             checkEnabled()
         }
 
-        add(title)
-        add(ckClickMethod)
-        add(normalLayout)
-        add(listLayout)
-        add(ckLoadMore)
-        add(autoRefresh)
-        add(itemDecoration)
-        add(dataEmpty)
+        add(title.toCustomSize())
+        add(ckClickMethod?.toCustomSize())
+        add(normalLayout?.toCustomSize())
+        add(listLayout?.toCustomSize())
+        add(ckLoadMore?.toCustomSize())
+        add(autoRefresh?.toCustomSize())
+        add(itemDecoration?.toCustomSize())
+        add(dataEmpty?.toCustomSize())
 
         checkEnabled()
     }
 
     companion object {
-        const val LAYOUT_WIDTH = 400
+        const val LAYOUT_WIDTH = FONT_SIZE * 30
     }
 
 }
