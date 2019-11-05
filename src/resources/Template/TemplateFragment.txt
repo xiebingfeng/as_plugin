@@ -1,10 +1,10 @@
 package $packagename
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.os.Bundle
 import android.view.View
-import com.krt.frame.frame.fragment.BaseLceFragment
-import com.krt.frame.frame.toolbar.ToolBarConfig
-import com.krt.frame.frame.toolbar.style.ToolBarStyle
+import com.xbf.frame.frame.fragment.BaseLceFragment
+import com.xbf.frame.frame.toolbar.ToolBarConfig
+import com.xbf.frame.frame.toolbar.style.ToolBarStyle
 $extrapackagename
 
 class $classNameFragment : BaseLceFragment<$classNameViewModel>(){

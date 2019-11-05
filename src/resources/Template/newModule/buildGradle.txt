@@ -88,5 +88,4 @@ dependencies {
 
     implementation project(':modulelibs:businessModule')
     implementation project(':modulelibs:componentModule')
-    implementation project(':modulelibs:networkModule')
 }

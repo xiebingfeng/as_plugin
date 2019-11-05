@@ -130,7 +130,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
                     mToolBarText.append(",\nrightViewTextFontColor = getColor(R.color.base_white)")
                 }
                 mPackageText.append("import com.krt.frame.frame.toolbar.style.ToolBarViewStyle\n")
-                mPackageText.append("import com.krt.base.ext.getColor\n")
+                mPackageText.append("import com.krt.frame.ext.getColor\n")
 
                 //获取右按钮显示字
                 val rightViewText = toolBar.rightViewTitle!!.text.toString().trim()
@@ -221,7 +221,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         if (!contentLayout.normalLayout!!.isSelected) {
             var content = "\n" + FileIOUtils2.readTemplateFile("/view/TemplateListView.txt", mAnAction)
             mPackageText.append("import kotlinx.android.synthetic.main.").append(layoutName).append(".*\n")
-            mPackageText.append("import com.krt.base.ext.initSwipeRefreshLayout\n")
+            mPackageText.append("import com.krt.frame.ext.initSwipeRefreshLayout\n")
 
             val listParams = StringBuilder()
 

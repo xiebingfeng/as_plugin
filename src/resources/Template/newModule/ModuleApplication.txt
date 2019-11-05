@@ -1,6 +1,6 @@
-package com.krt.$packageName.debug
+package com.xbf.$packageName.debug
 
-import com.krt.business.BaseApplication
+import com.xbf.business.BaseApplication
 
 @Deprecated("$ModuleRemark")
 class $ModuleNameUpModuleApplication : BaseApplication() {

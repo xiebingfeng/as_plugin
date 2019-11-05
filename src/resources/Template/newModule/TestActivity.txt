@@ -1,12 +1,12 @@
 package com.krt.$packageName.debug
 
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.krt.component.routhpath.RouterPath$ModuleNameUp
+import com.krt.component.service.I$ModuleNameUpModuleService
 import com.krt.frame.frame.activity.BaseActivity
 import com.krt.frame.frame.fragment.BaseFragment
 
 @Deprecated("$ModuleRemark")
-@Route(path = RouterPath$ModuleNameUp.TEST_ACTIVITY)
+@Route(path = I$ModuleNameUpModuleService.TEST_ACTIVITY)
 class $ModuleNameUpTestActivity : BaseActivity() {
 
     override fun getRootFragment(): BaseFragment = null!!

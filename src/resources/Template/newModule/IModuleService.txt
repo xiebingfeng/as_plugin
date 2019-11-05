@@ -4,4 +4,9 @@ import com.krt.frame.app.IModuleService
 
 interface I$ModuleNameUpModuleService : IModuleService {
 
+    companion object {
+        const val TEST_ACTIVITY = "/$packageName/test_activity"
+        const val APPLICATION = "/$packageName/application"
+    }
+
 }

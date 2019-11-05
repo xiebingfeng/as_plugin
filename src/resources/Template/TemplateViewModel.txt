@@ -1,8 +1,8 @@
 package $packagename
 
 import android.app.Application
-import android.arch.lifecycle.MutableLiveData
-import com.krt.frame.frame.mvvm.BaseViewModel
+import androidx.lifecycle.MutableLiveData
+import com.xbf.frame.frame.mvvm.BaseViewModel
 $extrapackagename
 class $classNameViewModel(application: Application) : BaseViewModel(application) {
 

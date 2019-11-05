@@ -48,7 +48,7 @@ object ModuleCreateFindUtils {
 
         val moduleServiceFactoryFile = componentDir!!.findFile("ModuleServiceFactory.kt")
         val serviceDir = componentDir!!.findSubdirectory("service")
-        val routhpathDir = componentDir!!.findSubdirectory("routhpath")
+//        val routhpathDir = componentDir!!.findSubdirectory("routhpath")
         if (null == moduleServiceFactoryFile) {
             showCommonDialog("找不到 ModuleServiceFactory.kt")
             return false
@@ -57,10 +57,10 @@ object ModuleCreateFindUtils {
             showCommonDialog("找不到 service包")
             return false
         }
-        if (null == routhpathDir) {
-            showCommonDialog("找不到 routhpath包")
-            return false
-        }
+//        if (null == routhpathDir) {
+//            showCommonDialog("找不到 routhpath包")
+//            return false
+//        }
 
         val serviceFile = serviceDir.findFile("I" + newModuleName.toCustomUpCase() + "Service.kt")
         if (serviceFile != null) {
@@ -68,11 +68,11 @@ object ModuleCreateFindUtils {
             return false
         }
 
-        val routerPathFile = routhpathDir.findFile("RouterPath" + newModuleName.toCustomUpCase() + ".kt")
-        if (routerPathFile != null) {
-            showCommonDialog("routerpath包下有重复的   RouterPath类")
-            return false
-        }
+//        val routerPathFile = routhpathDir.findFile("RouterPath" + newModuleName.toCustomUpCase() + ".kt")
+//        if (routerPathFile != null) {
+//            showCommonDialog("routerpath包下有重复的   RouterPath类")
+//            return false
+//        }
 
         val moduleServiceFactoryText = moduleServiceFactoryFile.text
 
@@ -84,20 +84,20 @@ object ModuleCreateFindUtils {
         //在ModuleServiceFactory
         val resultString = StringBuilder(moduleServiceFactoryText)
         val index = moduleServiceFactoryText.indexOf("//module service end,do not delete this")
-        resultString.insert(index, "val " + newModuleName + "Service by lazy { initModule(RouterPath"+newModuleName.toCustomUpCase()+".APPLICATION) as? I" + newModuleName.toCustomUpCase() + "ModuleService }\n\n  ")
+        resultString.insert(index, "val " + newModuleName + "Service by lazy { initModule(I" + newModuleName.toCustomUpCase() + "ModuleService.APPLICATION) as? I" + newModuleName.toCustomUpCase() + "ModuleService }\n\n  ")
         moduleServiceFactoryFile.viewProvider.document?.setText(resultString.toString())
         FileFormatUtils.format(project, moduleServiceFactoryFile)
 
-        //创建RouterPathXXX
-        FileIOUtils2.readTemplateFile("/newModule/RouterPath.txt", action)
-                .replace(ModuleCreateManager.MODULE_REMARK, moduleRemark)
-                .replace(ModuleCreateManager.PACKAGE_NAME, newModuleName.toPackageName())
-                .replace(ModuleCreateManager.MODULE_NAME_UP, newModuleName.toCustomUpCase()).let {
-                    PsiFileFactory.getInstance(project)?.createFileFromText("RouterPath" + newModuleName.toCustomUpCase() + ".kt", KotlinFileType(), it)?.let {
-                        val addFile = routhpathDir.add(it)
-                        FileFormatUtils.format(project, addFile)
-                    }
-                }
+//        //创建RouterPathXXX
+//        FileIOUtils2.readTemplateFile("/newModule/RouterPath.txt", action)
+//                .replace(ModuleCreateManager.MODULE_REMARK, moduleRemark)
+//                .replace(ModuleCreateManager.PACKAGE_NAME, newModuleName.toPackageName())
+//                .replace(ModuleCreateManager.MODULE_NAME_UP, newModuleName.toCustomUpCase()).let {
+//                    PsiFileFactory.getInstance(project)?.createFileFromText("RouterPath" + newModuleName.toCustomUpCase() + ".kt", KotlinFileType(), it)?.let {
+//                        val addFile = routhpathDir.add(it)
+//                        FileFormatUtils.format(project, addFile)
+//                    }
+//                }
 
         //创建IXXXModuleService
         FileIOUtils2.readTemplateFile("/newModule/IModuleService.txt", action)
