@@ -1,9 +1,9 @@
-package com.krt.$packageName
+package com.$packageDifference.$packageName
 
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.krt.component.service.I$ModuleNameUpModuleService
-import com.krt.frame.app.BaseApp
-import com.krt.frame.app.IModuleService
+import com.$packageDifference.component.service.I$ModuleNameUpModuleService
+import com.xbf.frame.app.BaseApp
+import com.xbf.frame.app.IModuleService
 
 @Route(path = I$ModuleNameUpModuleService.APPLICATION)
 class $ModuleNameUpModuleApp : BaseApp() {

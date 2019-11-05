@@ -1,0 +1,47 @@
+<idea-plugin>
+    <id>com.your.company.unique.plugin.id</id>
+    <name>xbf Android</name>
+    <version>1.0</version>
+    <vendor email="471155245@qq.com">Krt</vendor>
+
+    <description><![CDATA[
+      main.action.MVVMAction.<br>
+      <em>main.action.MainAction</em>
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+
+        <action id="main.action.NetworkAction" class="main.action.NetworkAction" text="KRT__Create_Http"
+                description="快速生成网络方法">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift alt O"/>
+        </action>
+
+        <action id="main.action.MVVMAction" class="main.action.MVVMAction" text="KRT__Create_File"
+                description="快速生成类">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift alt P"/>
+        </action>
+
+        <action id="main.module.ModuleAction" class="main.module.ModuleAction" text="KRT_Rebuild_Module"
+                description="调整模块调试">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift alt L"/>
+        </action>
+
+    </actions>
+
+</idea-plugin>

@@ -1,6 +1,6 @@
-package com.xbf.$packageName.debug
+package com.$packageDifference.$packageName.debug
 
-import com.xbf.business.BaseApplication
+import com.$packageDifference.business.BaseApplication
 
 @Deprecated("$ModuleRemark")
 class $ModuleNameUpModuleApplication : BaseApplication() {

@@ -24,7 +24,7 @@ class ModuleCreateAction {
         mModuleCreateLayout?.setBounds(0, 0, ModuleCreateLayout.LAYOUT_WIDTH, 400)
 
         val jDialog = JDialog()
-        jDialog.title = "KRT-CREATE-MODULE"
+        jDialog.title = "XBF-CREATE-MODULE"
         jDialog.setSize(ModuleCreateLayout.LAYOUT_WIDTH, 500)
         jDialog.setLocation(400, 200)
         jDialog.layout = null

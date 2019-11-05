@@ -1,6 +1,5 @@
 package main.container
 
-import com.intellij.util.ui.JBDimension
 import main.config.ProjectConfig
 import main.utils.FONT_SIZE
 import main.utils.boldStyle
@@ -8,7 +7,6 @@ import main.utils.toCustomSize
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.FlowLayout
-import java.awt.Font
 import javax.swing.JCheckBox
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -41,7 +39,8 @@ class ClassLayout : JPanel() {
         tvLayoutName.boldStyle()
 
         etLayoutName = JTextField("")
-        etLayoutName?.preferredSize = JBDimension(FONT_SIZE * 11, (FONT_SIZE * 2).toInt())
+        etLayoutName?.preferredSize = Dimension(FONT_SIZE * 11, (FONT_SIZE * 2).toInt())
+
 
         if (ProjectConfig.isDebug) {
             etClassName?.text = "UserName"
@@ -52,7 +51,7 @@ class ClassLayout : JPanel() {
 
         val newInstanceContainer = JPanel()
         newInstanceContainer.apply {
-            preferredSize = JBDimension(LAYOUT_WIDTH, FONT_SIZE * 2)
+            preferredSize = Dimension(LAYOUT_WIDTH, FONT_SIZE * 2)
             layout = FlowLayout(FlowLayout.LEFT)
 
             newInstanceCB = JCheckBox("是否增加newInstance()方法", true)

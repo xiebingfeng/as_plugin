@@ -1,6 +1,6 @@
-package com.krt.$packageName
+package com.$packageDifference.$packageName
 
-import com.krt.component.service.I$ModuleNameUpModuleService
+import com.$packageDifference.component.service.I$ModuleNameUpModuleService
 
 class $ModuleNameUpModuleService : I$ModuleNameUpModuleService {
 }

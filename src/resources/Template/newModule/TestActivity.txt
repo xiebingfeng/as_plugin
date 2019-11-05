@@ -1,9 +1,9 @@
-package com.krt.$packageName.debug
+package com.$packageDifference.$packageName.debug
 
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.krt.component.service.I$ModuleNameUpModuleService
-import com.krt.frame.frame.activity.BaseActivity
-import com.krt.frame.frame.fragment.BaseFragment
+import com.$packageDifference.component.service.I$ModuleNameUpModuleService
+import com.xbf.frame.frame.activity.BaseActivity
+import com.xbf.frame.frame.fragment.BaseFragment
 
 @Deprecated("$ModuleRemark")
 @Route(path = I$ModuleNameUpModuleService.TEST_ACTIVITY)

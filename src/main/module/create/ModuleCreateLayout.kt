@@ -12,6 +12,7 @@ class ModuleCreateLayout : JPanel() {
     var etModuleName: JTextField? = null
     var etPreFix: JTextField? = null
     var etRemark: JTextField? = null
+    var etPackageName: JTextField? = null
 
     var rtModuleNormal: JRadioButton? = null
     var rtModuleBusiness: JRadioButton? = null
@@ -44,12 +45,19 @@ class ModuleCreateLayout : JPanel() {
         val tvModuleRemarkName = JLabel("模块注解：")
         tvModuleRemarkName.boldStyle()
 
+        val tvPackageDes = JLabel("公司项目差别包名： ")
+        val tvCom = JLabel("com.")
+        etPackageName = JTextField()
+        etPackageName!!.text = "xbf"
+        etPackageName?.preferredSize = Dimension(50, 30)
+        val tvComEnd = JLabel(".xxx")
+
 
         etRemark = JTextField()
         if (ProjectConfig.isDebug) {
             etRemark!!.text = "好好啊"
         }
-        etRemark?.preferredSize = Dimension(100, 30)
+        etRemark?.preferredSize = Dimension(120, 30)
 
         rtModuleNormal = JRadioButton("普通")
         rtModuleBusiness = JRadioButton("业务模块", true)
@@ -73,6 +81,11 @@ class ModuleCreateLayout : JPanel() {
 
         add(tvModuleRemarkName)
         add(etRemark)
+
+        add(tvPackageDes)
+        add(tvCom)
+        add(etPackageName)
+        add(tvComEnd)
 
         add(moduleRBContainer)
     }

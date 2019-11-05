@@ -1,13 +1,11 @@
 package main.module.create
 
 import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiManager
-import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl.PACKAGE_NAME
 import main.executeAfterTime
 import main.executeCouldRollBackAction
 import main.filetype.*
@@ -22,6 +20,7 @@ class ModuleCreateManager {
     private var action: AnAction? = null
     private var project: Project? = null
     private var moduleType = 0
+    private var packageDifference = "xbf"
 
     fun create(project: Project?, action: AnAction?, moduleCreateLayout: ModuleCreateLayout) {
         this.project = project
@@ -30,6 +29,7 @@ class ModuleCreateManager {
 
         moduleRemark = moduleCreateLayout.etRemark?.text ?: ""
         newModuleName = moduleCreateLayout.etModuleName?.text
+        packageDifference = moduleCreateLayout.etPackageName?.text ?: "xbf"
         if (newModuleName == null || newModuleName!!.isEmpty()) {
             showCommonDialog("请输入模块名")
             return
@@ -84,7 +84,7 @@ class ModuleCreateManager {
         ////////////////////////////////////////////////
         ////////////////////////////////////////////////
 
-        if (moduleType == 1 && !ModuleCreateFindUtils.createComponentModule(project, action, newModuleName!!, moduleRemark!!)) {
+        if (moduleType == 1 && !ModuleCreateFindUtils.createComponentModule(project, action, newModuleName!!, packageDifference)) {
             return
         }
         ////////以上为检验，前提条件
@@ -103,6 +103,7 @@ class ModuleCreateManager {
                 val buildGradleString = FileIOUtils2.readTemplateFile("/newModule/buildGradle.txt", action)
                         .replace("\$moduleName", newModuleName!!.toBuildGradleModuleName())
                         .replace("\$applicationId", newModuleName!!.toBuildGradleApplicationId())
+                        .replace(ModuleCreateManager.PACKAGE_DIFFERENCE, packageDifference)
                         .replace("\$resourcePrefix", preFixString)
                 PsiFileFactory.getInstance(project)?.createFileFromText(".gitignore", NullFileType(), gitignoreString)?.let {
                     add(it)
@@ -128,11 +129,11 @@ class ModuleCreateManager {
                 addMain(this)
             }
             createSubdirectory("androidTest").apply {
-                ModuleCreateTestUtils.createAndroidText(this, newModuleName, action)
+                ModuleCreateTestUtils.createAndroidText(this, newModuleName, action, packageDifference)
             }
 
             createSubdirectory("test").apply {
-                ModuleCreateTestUtils.createTest(this, newModuleName, action)
+                ModuleCreateTestUtils.createTest(this, newModuleName, action, packageDifference)
             }
 
         }
@@ -142,7 +143,7 @@ class ModuleCreateManager {
         mainDir.apply {
             createSubdirectory("java").apply {
                 createSubdirectory("com").apply {
-                    createSubdirectory("krt").apply {
+                    createSubdirectory(packageDifference).apply {
                         createSubdirectory(newModuleName!!.toPackageName()).apply {
                             addPackageNameDir(this)
                             createSubdirectory("debug").apply {
@@ -156,6 +157,7 @@ class ModuleCreateManager {
             createSubdirectory("manifest").let { manifestDir ->
                 FileIOUtils2.readTemplateFile("/newModule/DebugAndroidManifest.txt", action)
                         .replace(PACKAGE_NAME, newModuleName!!.toPackageName())
+                        .replace(PACKAGE_DIFFERENCE, packageDifference)
                         .replace(MODULE_NAME_UP, newModuleName!!.toCustomUpCase()).let {
                             PsiFileFactory.getInstance(project)?.createFileFromText("AndroidManifest.xml", XmlFileType(), it)?.let {
                                 manifestDir.add(it)
@@ -170,6 +172,7 @@ class ModuleCreateManager {
 
             FileIOUtils2.readTemplateFile("/newModule/AndroidManifest.txt", action)
                     .replace(PACKAGE_NAME, newModuleName!!.toPackageName())
+                    .replace(PACKAGE_DIFFERENCE, packageDifference)
                     .replace(MODULE_NAME_UP, newModuleName!!.toCustomUpCase()).let {
                         PsiFileFactory.getInstance(project)?.createFileFromText("AndroidManifest.xml", XmlFileType(), it)?.let {
                             add(it)
@@ -179,11 +182,12 @@ class ModuleCreateManager {
     }
 
     /**
-     * 如在  com.krt.good  下添加文件
+     * 如在  com.xbf.good  下添加文件
      */
     private fun addPackageNameDir(packageDir: PsiDirectory) {
         FileIOUtils2.readTemplateFile("/newModule/ModuleService.txt", action)
                 .replace(PACKAGE_NAME, newModuleName!!.toPackageName())
+                .replace(ModuleCreateManager.PACKAGE_DIFFERENCE, packageDifference)
                 .replace(MODULE_NAME_UP, newModuleName!!.toCustomUpCase()).let {
                     PsiFileFactory.getInstance(project)?.createFileFromText(newModuleName!!.toCustomUpCase() + "ModuleService.kt", KotlinFileType(), it)?.let { file ->
                         executeCouldRollBackAction(project) {
@@ -195,6 +199,7 @@ class ModuleCreateManager {
         FileIOUtils2.readTemplateFile("/newModule/ModuleApp.txt", action)
                 .replace(PACKAGE_NAME, newModuleName!!.toPackageName())
                 .replace("\$NormalModuleName", newModuleName!!)
+                .replace(ModuleCreateManager.PACKAGE_DIFFERENCE, packageDifference)
                 .replace(MODULE_NAME_UP, newModuleName!!.toCustomUpCase()).let {
                     PsiFileFactory.getInstance(project)?.createFileFromText(newModuleName!!.toCustomUpCase() + "ModuleApp.kt", KotlinFileType(), it)?.let { file ->
                         executeCouldRollBackAction(project) {
@@ -205,12 +210,13 @@ class ModuleCreateManager {
     }
 
     /**
-     * 如在  com.krt.good.debug  下添加文件
+     * 如在  com.xbf.good.debug  下添加文件
      */
     private fun addDebugDir(debugDir: PsiDirectory) {
         FileIOUtils2.readTemplateFile("/newModule/TestActivity.txt", action)
                 .replace(MODULE_REMARK, moduleRemark!!)
                 .replace(PACKAGE_NAME, newModuleName!!.toPackageName())
+                .replace(ModuleCreateManager.PACKAGE_DIFFERENCE, packageDifference)
                 .replace(MODULE_NAME_UP, newModuleName!!.toCustomUpCase()).let {
                     PsiFileFactory.getInstance(project)?.createFileFromText(newModuleName!!.toCustomUpCase() + "TestActivity.kt", KotlinFileType(), it)?.let { file ->
                         executeCouldRollBackAction(project) {
@@ -222,6 +228,7 @@ class ModuleCreateManager {
         FileIOUtils2.readTemplateFile("/newModule/ModuleApplication.txt", action)
                 .replace(MODULE_REMARK, moduleRemark!!)
                 .replace(PACKAGE_NAME, newModuleName!!.toPackageName())
+                .replace(ModuleCreateManager.PACKAGE_DIFFERENCE, packageDifference)
                 .replace(MODULE_NAME_UP, newModuleName!!.toCustomUpCase()).let {
                     PsiFileFactory.getInstance(project)?.createFileFromText(newModuleName!!.toCustomUpCase() + "ModuleApplication.kt", KotlinFileType(), it)?.let { file ->
                         executeCouldRollBackAction(project) {
@@ -274,6 +281,7 @@ class ModuleCreateManager {
     companion object {
         const val MODULE_REMARK = "\$ModuleRemark"
         const val MODULE_NAME_UP = "\$ModuleNameUp"
+        const val PACKAGE_DIFFERENCE = "\$packageDifference"
         const val PACKAGE_NAME = "\$packageName"
     }
 }

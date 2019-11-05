@@ -129,8 +129,8 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
                 if (toolBar.rightColorCustom!!.isSelected) {
                     mToolBarText.append(",\nrightViewTextFontColor = getColor(R.color.base_white)")
                 }
-                mPackageText.append("import com.krt.frame.frame.toolbar.style.ToolBarViewStyle\n")
-                mPackageText.append("import com.krt.frame.ext.getColor\n")
+                mPackageText.append("import com.xbf.frame.frame.toolbar.style.ToolBarViewStyle\n")
+                mPackageText.append("import com.xbf.frame.ext.getColor\n")
 
                 //获取右按钮显示字
                 val rightViewText = toolBar.rightViewTitle!!.text.toString().trim()
@@ -142,7 +142,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         }
 
         if (mToolBarCustom.isNotEmpty()) {
-            mPackageText.append("import com.krt.business.ext.toCustom\n")
+            mPackageText.append("import com.xbf.business.ext.toCustom\n")
             mToolBarCustom.insert(0, ".toCustom(").append(")\n")
         }
 
@@ -193,7 +193,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
             if (ProjectConfig.isNormalLayout) {
                 viewModelContent = "viewModel?.firstComingLiveData?.observe(this, Observer {\n       })"
             } else {
-                mPackageText.append("import com.krt.frame.ext.obs\n")
+                mPackageText.append("import com.xbf.frame.ext.obs\n")
                 viewModelContent = "viewModel?.firstComingLiveData?.observe(this, Observer {\n" +
                         "            mAdapter.setNewData(it)\n" +
                         "        })"
@@ -221,7 +221,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         if (!contentLayout.normalLayout!!.isSelected) {
             var content = "\n" + FileIOUtils2.readTemplateFile("/view/TemplateListView.txt", mAnAction)
             mPackageText.append("import kotlinx.android.synthetic.main.").append(layoutName).append(".*\n")
-            mPackageText.append("import com.krt.frame.ext.initSwipeRefreshLayout\n")
+            mPackageText.append("import com.xbf.frame.ext.initSwipeRefreshLayout\n")
 
             val listParams = StringBuilder()
 

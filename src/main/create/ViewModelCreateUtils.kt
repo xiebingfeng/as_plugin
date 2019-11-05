@@ -56,16 +56,16 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
     private fun replaceHttpCall(httpCallLayout: HttpCallLayout, contentLayout: ContentLayout) {
         val isGet = httpCallLayout.rtGetRequest!!.isSelected
         if (isGet) {
-            mPackageText.append("import com.krt.base.ext.toParams\n")
-            mPackageText.append("import com.krt.network.httpGet\n")
+            mPackageText.append("import com.xbf.base.ext.toParams\n")
+            mPackageText.append("import com.xbf.network.httpGet\n")
         } else {
-            mPackageText.append("import com.krt.base.ext.toJson\n")
-            mPackageText.append("import com.krt.network.httpPost\n")
+            mPackageText.append("import com.xbf.base.ext.toJson\n")
+            mPackageText.append("import com.xbf.network.httpPost\n")
         }
 
         mHttpCallContent.append(HttpCoreUtils.getHttpCallCommon(httpCallLayout, isListMoreEnabled))
         if (mHttpCallContent.indexOf("lce =") > 0) {
-            mPackageText.append("import com.krt.network.base.LCEParams\n")
+            mPackageText.append("import com.xbf.network.base.LCEParams\n")
         }
 
         var dataContent = ""
@@ -102,7 +102,7 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
         }
 
         if (mHttpCallContent.contains("TestUrl.")) {
-            mPackageText.append("import com.krt.network.test.TestUrl\n")
+            mPackageText.append("import com.xbf.network.test.TestUrl\n")
         }
 
         mHttpCallContent.replace(mHttpCallContent.indexOf("\$dataContent"), mHttpCallContent.indexOf("\$dataContent") + 12, dataContent)

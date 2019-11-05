@@ -1,4 +1,4 @@
-package com.krt.$packageName;
+package com.$packageDifference.$packageName;
 
 import org.junit.Test;
 

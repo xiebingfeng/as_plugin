@@ -27,7 +27,7 @@ android {
 
         if (is_$moduleName_module_run_alone.toBoolean()) {
             // 单独调试时添加 applicationId ，集成调试时移除
-            applicationId "com.krt.$applicationId"
+            applicationId "com.$packageDifference.$applicationId"
         }
 
         minSdkVersion rootProject.ext.minSdkVersion

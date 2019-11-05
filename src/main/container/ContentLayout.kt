@@ -1,11 +1,11 @@
 package main.container
 
-import com.intellij.util.ui.JBDimension
 import main.config.ProjectConfig
 import main.utils.FONT_SIZE
 import main.utils.boldStyle
 import main.utils.toCustomSize
 import java.awt.Color
+import java.awt.Dimension
 import java.awt.FlowLayout
 import javax.swing.*
 
@@ -29,14 +29,14 @@ class ContentLayout : JPanel() {
 
         val title = JLabel("布局设置")
         title.boldStyle()
-        title.preferredSize = JBDimension(LAYOUT_WIDTH, (FONT_SIZE * 2.1).toInt())
+        title.preferredSize = Dimension(LAYOUT_WIDTH, (FONT_SIZE * 2.1).toInt())
 
         ckClickMethod = JCheckBox("重写点击函数(就是把点击功能放在一个地方集中处理)", true)
 
 
         normalLayout = JRadioButton("普通布局", true)
         listLayout = JRadioButton("列表布局")
-        listLayout?.preferredSize = JBDimension(FONT_SIZE * 14, (FONT_SIZE * 2.2).toInt())
+        listLayout?.preferredSize = Dimension(FONT_SIZE * 14, (FONT_SIZE * 2.2).toInt())
 
         val group = ButtonGroup()
         group.add(normalLayout?.toCustomSize())

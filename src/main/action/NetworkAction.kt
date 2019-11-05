@@ -39,7 +39,7 @@ class NetworkAction : AnAction() {
 
     private fun showDialog() {
         val jDialog = JDialog()
-        jDialog.title = "KRT"
+        jDialog.title = "XBF"
         jDialog.setSize(HttpCallLayout.LAYOUT_WIDTH, FONT_SIZE * 37)
         jDialog.setLocation(FONT_SIZE * 30, FONT_SIZE * 14)
         jDialog.layout = null

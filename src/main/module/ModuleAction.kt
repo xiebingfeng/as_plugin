@@ -51,7 +51,7 @@ class ModuleAction : AnAction() {
         container.background = Color.RED
 
         val jDialog = JDialog()
-        jDialog.title = "KRT"
+        jDialog.title = "XBF"
         jDialog.setSize(ModuleAllocationContainer.LAYOUT_WIDTH, 500)
         jDialog.setLocation(400, 200)
         jDialog.layout = null

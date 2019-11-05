@@ -1,6 +1,5 @@
 package main.container
 
-import com.intellij.util.ui.JBDimension
 import main.config.ProjectConfig
 import main.utils.FONT_SIZE
 import main.utils.boldStyle
@@ -49,12 +48,12 @@ class ToolBarLayout : JPanel() {
         val tvTitleName = JLabel("标题名：")
 
         etTitleName = JTextField("")
-        etTitleName?.preferredSize = JBDimension(FONT_SIZE * 12, (FONT_SIZE * 2.1).toInt())
+        etTitleName?.preferredSize = Dimension(FONT_SIZE * 12, (FONT_SIZE * 2.1).toInt())
 
         ckBack = JCheckBox("默认后退功能")
         ckToolBarBackGround = JCheckBox("默认标题栏背景色")
         ckMainBackGround = JCheckBox("默认主背景色")
-        ckMainBackGround?.preferredSize = JBDimension(FONT_SIZE * 14, (FONT_SIZE * 2.1).toInt())
+        ckMainBackGround?.preferredSize = Dimension(FONT_SIZE * 14, (FONT_SIZE * 2.1).toInt())
 
         ckBottomLine = JCheckBox("标题栏底下显示默认横线")
         ckEventBus = JCheckBox("自动检测 注册和销毁EventBus(默认是的)", true)
@@ -113,7 +112,7 @@ class ToolBarLayout : JPanel() {
 
         rbRightViewText = JRadioButton("文字", true)
         rbRightViewImage = JRadioButton("图片按钮")
-        rbRightViewImage?.preferredSize = JBDimension(FONT_SIZE * 13, (FONT_SIZE * 2.1).toInt())
+        rbRightViewImage?.preferredSize = Dimension(FONT_SIZE * 13, (FONT_SIZE * 2.1).toInt())
         val groupRight = ButtonGroup()
         groupRight.add(rbRightViewText?.toCustomSize())
         groupRight.add(rbRightViewImage?.toCustomSize())
@@ -130,7 +129,7 @@ class ToolBarLayout : JPanel() {
 
 
         rightViewTitle = JTextField("新增")
-        rightViewTitle?.preferredSize = JBDimension((FONT_SIZE * 7.1).toInt(), (FONT_SIZE * 2.1).toInt())
+        rightViewTitle?.preferredSize = Dimension((FONT_SIZE * 7.1).toInt(), (FONT_SIZE * 2.1).toInt())
 
         fun enableAll() {
             rbRightViewText?.isEnabled = true
