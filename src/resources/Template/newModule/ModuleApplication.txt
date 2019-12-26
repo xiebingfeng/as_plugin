@@ -1,9 +1,9 @@
 package com.$packageDifference.$packageName.debug
 
-import com.$packageDifference.business.BaseApplication
+import com.$packageDifference.business.BusinessApplication
 
 @Deprecated("$ModuleRemark")
-class $ModuleNameUpModuleApplication : BaseApplication() {
+class $ModuleNameUpModuleApplication : BusinessApplication() {
 
     override fun onCreate() {
         super.onCreate()

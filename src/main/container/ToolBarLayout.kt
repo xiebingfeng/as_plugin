@@ -89,9 +89,9 @@ class ToolBarLayout : JPanel() {
         container.add(noneTitleLayout?.toCustomSize())
         container.add(tvTitleName.toCustomSize())
         container.add(etTitleName?.toCustomSize())
+        container.add(ckBottomLine?.toCustomSize())
         container.add(ckBack?.toCustomSize())
         container.add(ckToolBarBackGround?.toCustomSize())
-        container.add(ckBottomLine?.toCustomSize())
         container.add(ckMainBackGround?.toCustomSize())
         container.add(ckEventBus?.toCustomSize())
     }
@@ -112,7 +112,7 @@ class ToolBarLayout : JPanel() {
 
         rbRightViewText = JRadioButton("文字", true)
         rbRightViewImage = JRadioButton("图片按钮")
-        rbRightViewImage?.preferredSize = Dimension(FONT_SIZE * 13, (FONT_SIZE * 2.1).toInt())
+        rbRightViewImage?.preferredSize = Dimension(FONT_SIZE * 14, (FONT_SIZE * 2.1).toInt())
         val groupRight = ButtonGroup()
         groupRight.add(rbRightViewText?.toCustomSize())
         groupRight.add(rbRightViewImage?.toCustomSize())

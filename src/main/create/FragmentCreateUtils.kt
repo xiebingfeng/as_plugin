@@ -29,6 +29,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
     private var mContentFirstLoad = StringBuilder()
     private var mContentNewInstance = StringBuilder()
     private var mContentInitViewModel = StringBuilder()
+    private var mContentInitBeforeLce = StringBuilder()
 
     private var mAnAction: MVVMAction? = null
 
@@ -47,8 +48,9 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         mResultContent.append(FileIOUtils2.readTemplateFile("TemplateFragment.txt", mAnAction))
 
         //生成内容
-        initToolBarAndCreateXmlLayout(layoutName, className, toolBar)
+        initToolBarAndCreateXmlLayout(layoutName, className, toolBar, classLayout)
         initModuleLiveData(classLayout, httpCallContent, contentLayout)
+        initViewBeforeLce(contentLayout)
         initView(contentLayout, layoutName)
         initClick(contentLayout)
         initFirstLoad(contentLayout)
@@ -56,7 +58,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         initLast(className)
 
         if (ProjectConfig.isDebug) {
-//            showCommonDialog(mResultContent.toString())
+            showCommonDialog(mResultContent.toString())
         } else {
             val fileName = className + "Fragment"
             val file = directLoadUtils.psiFileFactory!!.createFileFromText("$fileName.kt", KotlinFileType(), mResultContent)
@@ -70,7 +72,8 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
 
     private fun initToolBarAndCreateXmlLayout(layoutName: String,
                                               className: String,
-                                              toolBar: ToolBarLayout) {
+                                              toolBar: ToolBarLayout,
+                                              classLayout: ClassLayout) {
         //普通模式下
         if (toolBar.normalTitleLayout!!.isSelected) {
             //设置EventBus TODO
@@ -104,6 +107,11 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
                     mToolBarCustom.append(",\n")
                 }
                 mToolBarCustom.append("customBackground = true")
+            }
+
+            //刚进入界面时默认显示还是隐藏
+            if (classLayout.contentVisibleCB!!.isSelected) {
+                mToolBarText.append(",\nisContentDefaultInvisible = true")
             }
 
             //标题栏下显示默认横线
@@ -142,7 +150,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         }
 
         if (mToolBarCustom.isNotEmpty()) {
-            mPackageText.append("import com.xbf.business.ext.toCustom\n")
+            mPackageText.append("import com.krt.base.ext.toCustom\n")
             mToolBarCustom.insert(0, ".toCustom(").append(")\n")
         }
 
@@ -156,9 +164,9 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         }
 
         if (!ProjectConfig.isDebug) {
-            var resDir = directLoadUtils.srcMainDir?.findSubdirectory("res")
+            var resDir = directLoadUtils.srcCurrentDir?.findSubdirectory("res")
             if (resDir == null) {
-                resDir = directLoadUtils.srcMainDir?.createSubdirectory("res")
+                resDir = directLoadUtils.srcCurrentDir?.createSubdirectory("res")
             }
 
             var layoutDir = resDir?.findSubdirectory("layout")
@@ -176,16 +184,9 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
     }
 
     private fun initModuleLiveData(classLayout: ClassLayout, httpCallContent: HttpCallLayout, contentLayout: ContentLayout) {
-        //是否加载界面动画结束后   再加载数据
-        if (!classLayout.checkAnim!!.isSelected) {
-            mContentInitViewModel.append(" override fun initViewModelLiveData() {\n" +
-                    "        super.initViewModelLiveData()\n" + View_Model_Load_Data + "\n" +
-                    "    }\n")
-        } else {
-            mContentInitViewModel.append("override fun initViewModelLiveDataAfterAnimationEnd() {\n" +
-                    "        super.initViewModelLiveDataAfterAnimationEnd()\n" + View_Model_Load_Data + "\n" +
-                    "    }\n")
-        }
+        mContentInitViewModel.append(" override fun initViewModelLiveData() {\n" +
+                "        super.initViewModelLiveData()\n" + View_Model_Load_Data + "\n" +
+                "    }\n")
 
         var viewModelContent = ""
         if (httpCallContent.cbNetworkEnable!!.isSelected) {
@@ -215,12 +216,21 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         mContentInitViewModel.replace(mContentInitViewModel.indexOf(View_Model_Load_Data), mContentInitViewModel.indexOf(View_Model_Load_Data) + View_Model_Load_Data.length, viewModelContent)
     }
 
-    private fun initView(contentLayout: ContentLayout,
-                         layoutName: String) {
+    private fun initViewBeforeLce(contentLayout: ContentLayout) {
+        if (contentLayout.ckOverWriteInitViewLce!!.isSelected) {
+            mContentInitBeforeLce.append("   override fun initViewBeforeLceInitialization() {\n" +
+                    "        super.initViewBeforeLceInitialization()\n" +
+                    "    }")
+        } else {
+            mContentInitBeforeLce.append("")
+        }
+    }
+
+    private fun initView(contentLayout: ContentLayout, layoutName: String) {
         //普通布局  或  列表
         if (!contentLayout.normalLayout!!.isSelected) {
             var content = "\n" + FileIOUtils2.readTemplateFile("/view/TemplateListView.txt", mAnAction)
-            mPackageText.append("import kotlinx.android.synthetic.main.").append(layoutName).append(".*\n")
+            mPackageText.append("import kotlinx.android.synthetic." + directLoadUtils.projectName + ".").append(layoutName).append(".*\n")
             mPackageText.append("import com.xbf.frame.ext.initSwipeRefreshLayout\n")
 
             val listParams = StringBuilder()
@@ -264,7 +274,12 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
     private fun initFirstLoad(contentLayout: ContentLayout) {
         //普通布局  或  列表
         if (contentLayout.normalLayout!!.isSelected) {
-            val content = FileIOUtils2.readTemplateFile("/view/TemplateNormalView.txt", mAnAction)
+            val content = if (contentLayout.repeatRequestMethod!!.isSelected) {
+                FileIOUtils2.readTemplateFile("/view/TemplateNormalViewVisible.txt", mAnAction)
+            } else {
+                FileIOUtils2.readTemplateFile("/view/TemplateNormalView.txt", mAnAction)
+            }
+
             mContentFirstLoad.append(content + "\n")
         }
     }
@@ -329,6 +344,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
                 .replaceText(Content_On_View_Created, mContentOnViewCreated)
                 .replaceText(Content_New_Instance, mContentNewInstance)
                 .replaceText(Content_Init_View_Model, mContentInitViewModel)
+                .replaceText(Content_Init_View_BEFORE_LCE, mContentInitBeforeLce)
                 .replaceText(Content_Init_Click, mContentInitClick)
                 .replaceText(Content_Init_First_Load, mContentFirstLoad)
 
@@ -343,6 +359,7 @@ class FragmentCreateUtils(private val project: Project?, private val directLoadU
         private const val Content_Before = "\$contentBefore"
         private const val Content_On_View_Created = "\$initView"
         private const val Content_New_Instance = "\$contentNewInstance"
+        private const val Content_Init_View_BEFORE_LCE = "\$initBeforeLceInitialization"
         private const val Content_Init_View_Model = "\$contentInitViewModel"
         private const val Content_Init_Click = "\$contentInitClick"
         private const val Class_Name = "\$className"

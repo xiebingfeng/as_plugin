@@ -17,8 +17,8 @@ class ClassLayout : JPanel() {
     var etClassName: JTextField? = null
     var etLayoutName: JTextField? = null
     var ckActivityContainer: JCheckBox? = null
+    var contentVisibleCB: JCheckBox? = null
     var newInstanceCB: JCheckBox? = null
-    var checkAnim: JCheckBox? = null
     var pairAdd: JCheckBox? = null
 
     init {
@@ -48,10 +48,11 @@ class ClassLayout : JPanel() {
         }
 
         ckActivityContainer = JCheckBox("是否创建Activity装载Fragment")
+        contentVisibleCB= JCheckBox("刚进入界面默认隐藏内容布局(防止闪屏)")
 
         val newInstanceContainer = JPanel()
         newInstanceContainer.apply {
-            preferredSize = Dimension(LAYOUT_WIDTH, FONT_SIZE * 2)
+            preferredSize = Dimension(LAYOUT_WIDTH, FONT_SIZE * 4)
             layout = FlowLayout(FlowLayout.LEFT)
 
             newInstanceCB = JCheckBox("是否增加newInstance()方法", true)
@@ -61,18 +62,13 @@ class ClassLayout : JPanel() {
             add(pairAdd?.toCustomSize())
         }
 
-        checkAnim = JCheckBox("是否动画结束后再加载数据")
-        val animWarn = JLabel("动画未加载完就加载数据，会引起跳转卡顿")
-        animWarn.foreground = Color.red
-
         add(tvClassName.toCustomSize())
         add(etClassName?.toCustomSize())
         add(tvLayoutName.toCustomSize())
         add(etLayoutName?.toCustomSize())
         add(ckActivityContainer?.toCustomSize())
+        add(contentVisibleCB?.toCustomSize())
         add(newInstanceContainer)
-        add(checkAnim?.toCustomSize())
-        add(animWarn.toCustomSize(FONT_SIZE - 2))
     }
 
     companion object {

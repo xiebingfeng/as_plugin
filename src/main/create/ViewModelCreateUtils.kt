@@ -42,7 +42,7 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
         replaceLast(className)
 
         if (ProjectConfig.isDebug) {
-            showCommonDialog(mResultContent.toString())
+//            showCommonDialog(mResultContent.toString())
         } else {
             val fileName = className + "ViewModel"
             val file = directLoadUtils.psiFileFactory?.createFileFromText("$fileName.kt", KotlinFileType(), mResultContent)
@@ -56,10 +56,9 @@ class ViewModelCreateUtils(private val directLoadUtils: DirectLoadUtils, private
     private fun replaceHttpCall(httpCallLayout: HttpCallLayout, contentLayout: ContentLayout) {
         val isGet = httpCallLayout.rtGetRequest!!.isSelected
         if (isGet) {
-            mPackageText.append("import com.xbf.base.ext.toParams\n")
+            mPackageText.append("import com.xbf.frame.ext.toParams\n")
             mPackageText.append("import com.xbf.network.httpGet\n")
         } else {
-            mPackageText.append("import com.xbf.base.ext.toJson\n")
             mPackageText.append("import com.xbf.network.httpPost\n")
         }
 

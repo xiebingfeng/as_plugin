@@ -4,13 +4,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.file.PsiDirectoryFactory
-import com.intellij.psi.search.FilenameIndex
-import com.intellij.psi.search.GlobalSearchScope
 import org.w3c.dom.Element
 import main.utils.showCommonDialog
 import java.io.File
@@ -27,7 +24,7 @@ class DirectLoadUtils {
     var psiFileFactory: PsiFileFactory? = null
 
     //工程根目录文件路径  ::   /Users/xiebingfeng/IdeaProjects/MyApplication/app
-    var projectBaseFilePath = ""
+    var projectFilePath = ""
 
     //当前选中的包目录文件路径  ::  /Users/xiebingfeng/IdeaProjects/MyApplication/app/src/main/java/com/example/xiebingfeng/test
     var packageFilePath = ""
@@ -38,8 +35,11 @@ class DirectLoadUtils {
     //Module下的包名  R 文件 :   com.example.xiebingfeng.myapplication
     var packageName = ""
 
-    //PsiDirectory:/Users/xiebingfeng/IdeaProjects/MyApplication/app/src/main
-    var srcMainDir: PsiDirectory? = null
+    //PsiDirectory:/Users/xiebingfeng/IdeaProjects/MyApplication/app/src/yema
+    var srcCurrentDir: PsiDirectory? = null
+
+    //有可能是main、yema、yitong，大部分多是main
+    var projectName = "main"
 
     fun load(event: AnActionEvent) {
         try {
@@ -52,12 +52,16 @@ class DirectLoadUtils {
                     val navigatable = LangDataKeys.NAVIGATABLE.getData(dataContext)
                     val directory: PsiDirectory? =
                             if (navigatable is PsiDirectory) {
-                                srcMainDir = navigatable
-                                while (!srcMainDir.toString().endsWith("src" + File.separator + "main")) {
-                                    srcMainDir = srcMainDir?.parentDirectory
-                                    if (srcMainDir == null) {
+                                srcCurrentDir = navigatable
+//                                while (!srcMainDir.toString().endsWith("src" + File.separator + "main")) {
+                                while (!srcCurrentDir!!.parentDirectory.toString().endsWith("src")) {
+                                    srcCurrentDir = srcCurrentDir?.parentDirectory
+                                    if (srcCurrentDir == null) {
                                         return@let
                                     }
+                                }
+                                srcCurrentDir?.let {
+                                    projectName = srcCurrentDir.toString().subSequence(srcCurrentDir.toString().lastIndexOf("/") + 1, srcCurrentDir.toString().length).toString()
                                 }
                                 navigatable
                             } else {
@@ -100,10 +104,10 @@ class DirectLoadUtils {
 
             packageFilePath = directoryStr.subSequence(directoryStr.indexOf(":") + 1, directoryStr.length).toString()
 
-            projectBaseFilePath = directoryStr.subSequence(directoryStr.indexOf(":") + 1,
-                    directoryStr.indexOf(File.separator + "src" + File.separator + "main")).toString()
+            projectFilePath = directoryStr.subSequence(directoryStr.indexOf(":") + 1,
+                    directoryStr.indexOf(File.separator + "src")).toString()
 
-            val a = "$projectBaseFilePath" + File.separator + "src" + File.separator + "main" + File.separator + "AndroidManifest.xml"
+            val a = "$projectFilePath" + File.separator + "src" + File.separator + "main" + File.separator + "AndroidManifest.xml"
             val doc = db.parse(a)
             val nodeList = doc.getElementsByTagName("manifest")
             for (i in 0 until nodeList.length) {

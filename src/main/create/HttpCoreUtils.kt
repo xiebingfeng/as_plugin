@@ -39,9 +39,9 @@ object HttpCoreUtils {
             httpCallContent.append("$params\nhttpGet<String>(\$httpParams)")
         } else {
             if (isListMoreEnabled == true) {
-                params.append("val params = listOf(\"page\", \"page\").toJson()\n")
+                params.append("val params = listOf(\"page\", \"page\")\n")
             } else {
-                params.append("val params = listOf(\"\", \"\").toJson()\n")
+                params.append("val params = listOf(\"\", \"\")\n")
             }
             httpCallContent.append("$params\nhttpPost<String>(\$httpParams)")
         }
@@ -60,13 +60,12 @@ object HttpCoreUtils {
             httpParams.append("\"" + url + "\"" + ",this")
         }
 
+        httpParams.append("," + if (isGet) "httpParams = params" else "upJsonList = params")
 
-        httpParams.append("," + if (isGet) "httpParams = params" else "upJson = params")
-
-        //是否加载默认头
-        if (httpCallLayout.ckDefaultTokenHead!!.isSelected) {
-            httpParams.append(",defaultTokenHead = true")
-        }
+//        //是否加载默认头
+//        if (httpCallLayout.ckDefaultTokenHead!!.isSelected) {
+//            httpParams.append(",defaultTokenHead = true")
+//        }
 
         //////////////LCE MODE
         //不启动lce，纯粹的请求网络，用户看不见

@@ -82,8 +82,11 @@ class ModuleAction : AnAction() {
             jdDialog.isVisible = false
         }
 
-        val showText = JLabel("修改完成后请  sync project with Gradle Files")
-        showText.setBounds(0, 390, 300, 40)
+        val showText1 = JLabel("使用时，请手动添加Module依赖关系")
+        showText1.setBounds(0, 390, 300, 40)
+
+        val showText2 = JLabel("修改完成后请  sync project with Gradle Files")
+        showText2.setBounds(0, 390, 300, 40)
 
         val btnCreateModule = JButton("新建Module")
         btnCreateModule.setBounds(220, 430, 100, 40)
@@ -94,7 +97,8 @@ class ModuleAction : AnAction() {
 
         jdDialog.add(btnCancel)
         jdDialog.add(btnSpannedFile)
-        jdDialog.add(showText)
+        jdDialog.add(showText1)
+        jdDialog.add(showText2)
         jdDialog.add(btnCreateModule)
     }
 

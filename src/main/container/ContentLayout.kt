@@ -12,6 +12,8 @@ import javax.swing.*
 class ContentLayout : JPanel() {
 
     var ckClickMethod: JCheckBox? = null
+    var ckOverWriteInitViewLce: JCheckBox? = null
+    var repeatRequestMethod: JCheckBox? = null
     var normalLayout: JRadioButton? = null
     var listLayout: JRadioButton? = null
     var ckLoadMore: JCheckBox? = null
@@ -32,7 +34,9 @@ class ContentLayout : JPanel() {
         title.preferredSize = Dimension(LAYOUT_WIDTH, (FONT_SIZE * 2.1).toInt())
 
         ckClickMethod = JCheckBox("重写点击函数(就是把点击功能放在一个地方集中处理)", true)
-
+        ckOverWriteInitViewLce = JCheckBox("重写Lce初始前的initView，用的不多，详细见注解", false)
+        repeatRequestMethod = JCheckBox("每次回到界面，多重新请求数据", false)
+        repeatRequestMethod!!.preferredSize = Dimension(LAYOUT_WIDTH, (FONT_SIZE * 2.1).toInt())
 
         normalLayout = JRadioButton("普通布局", true)
         listLayout = JRadioButton("列表布局")
@@ -48,6 +52,8 @@ class ContentLayout : JPanel() {
         dataEmpty = JCheckBox("列表模式下：数据为空时，是否要显示数据为空的提示(默认是)", true)
 
         fun checkEnabled() {
+            repeatRequestMethod!!.isEnabled = !listLayout!!.isSelected
+
             ckLoadMore!!.isEnabled = listLayout!!.isSelected
             autoRefresh!!.isEnabled = listLayout!!.isSelected
             itemDecoration!!.isEnabled = listLayout!!.isSelected
@@ -64,8 +70,10 @@ class ContentLayout : JPanel() {
 
         add(title.toCustomSize())
         add(ckClickMethod?.toCustomSize())
+        add(ckOverWriteInitViewLce?.toCustomSize())
         add(normalLayout?.toCustomSize())
         add(listLayout?.toCustomSize())
+        add(repeatRequestMethod?.toCustomSize())
         add(ckLoadMore?.toCustomSize())
         add(autoRefresh?.toCustomSize())
         add(itemDecoration?.toCustomSize())

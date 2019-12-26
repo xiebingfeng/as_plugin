@@ -9,6 +9,6 @@ import com.xbf.frame.frame.fragment.BaseFragment
 @Route(path = I$ModuleNameUpModuleService.TEST_ACTIVITY)
 class $ModuleNameUpTestActivity : BaseActivity() {
 
-    override fun getRootFragment(): BaseFragment = null!!
+    override fun getRootFragment(): BaseFragment? = null
 
 }

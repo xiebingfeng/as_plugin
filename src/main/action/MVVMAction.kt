@@ -47,9 +47,9 @@ class MVVMAction : AnAction() {
         if (!ProjectConfig.isDebug) {
             mDirectLoadUtils?.load(e)
         }
-        mDirectLoadUtils?.projectBaseFilePath = project?.projectFile?.parent?.parent?.path.toString()
+        mDirectLoadUtils?.projectFilePath = project?.projectFile?.parent?.parent?.path.toString()
 
-        if (mDirectLoadUtils?.srcMainDir == null) {
+        if (mDirectLoadUtils?.srcCurrentDir == null) {
             showCommonDialog("请选择正常包路径")
         } else {
             showDialog()
@@ -133,7 +133,7 @@ class MVVMAction : AnAction() {
     }
 
     private fun checkFileExits(): Boolean {
-        val layoutFile = mDirectLoadUtils?.projectBaseFilePath + "/src/main/res/layout/" + "$mLayoutName.xml"
+        val layoutFile = mDirectLoadUtils?.projectFilePath + "/src/main/res/layout/" + "$mLayoutName.xml"
 
         if (File(layoutFile).exists()) {
             showCommonDialog("布局文件已存在")

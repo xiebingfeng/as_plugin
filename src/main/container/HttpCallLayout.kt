@@ -25,7 +25,7 @@ class HttpCallLayout(val createMethod: Boolean, val isDataTypeVisible: Boolean) 
     var ckLoadingCheck: JCheckBox? = null
     var ckErrorCheck: JCheckBox? = null
     var ckNotStartLce: JCheckBox? = null
-    var ckDefaultTokenHead: JCheckBox? = null
+    var ckShowContentWhenNormal: JCheckBox? = null
     var ckNotShowContentWhenSuccess: JCheckBox? = null
     var ckModifyErrorWarn: JCheckBox? = null
 
@@ -103,19 +103,18 @@ class HttpCallLayout(val createMethod: Boolean, val isDataTypeVisible: Boolean) 
         ckToObjectData?.isVisible = isDataTypeVisible
         ckToListData?.isVisible = isDataTypeVisible
 
-        ckDefaultTokenHead = JCheckBox("是否加载默认头")
-
         val lceWarn = JLabel("下面是LCE模式设置::::::::")
         lceWarn.preferredSize = Dimension(FONT_SIZE * 14, (FONT_SIZE * 2.1).toInt())
 
         ckLoadingCheck = JCheckBox("加载时显示  加载Dialog  (非列表刷新请求时使用)")
         ckErrorCheck = JCheckBox("当加载失败或网络错误时是否显示   错误界面")
 
-        ckNotStartLce = JCheckBox("不启动lce，纯粹的请求网络，用户看不见")
+        ckNotStartLce = JCheckBox("不启动lce，不管成功失败，纯粹的请求网络，用户看不见")
+        ckShowContentWhenNormal = JCheckBox("普通模式加载，不隐藏内容(默认是隐藏内容，显示转圈圈)")
         ckNotShowContentWhenSuccess = JCheckBox("请求成功后，是否立即取消等待，显示界面内容")
         ckModifyErrorWarn = JCheckBox("修改错误时返回的信息(到代码中修改内容)")
 
-        ckDefaultTokenHead?.preferredSize = Dimension(FONT_SIZE * 10, (FONT_SIZE * 2.1).toInt())
+        ckShowContentWhenNormal?.preferredSize = Dimension(LAYOUT_WIDTH, (FONT_SIZE * 2.1).toInt())
 
         fun checkEnabled() {
             val viewCount = componentCount
@@ -139,9 +138,9 @@ class HttpCallLayout(val createMethod: Boolean, val isDataTypeVisible: Boolean) 
         add(ckToObjectData?.toCustomSize())
         add(ckToListData?.toCustomSize())
 
-        add(ckDefaultTokenHead?.toCustomSize())
         add(lceWarn.toCustomSize())
         add(ckNotStartLce?.toCustomSize())
+        add(ckShowContentWhenNormal?.toCustomSize())
         add(ckLoadingCheck?.toCustomSize())
         add(ckErrorCheck?.toCustomSize())
         add(ckNotShowContentWhenSuccess?.toCustomSize())
@@ -151,7 +150,7 @@ class HttpCallLayout(val createMethod: Boolean, val isDataTypeVisible: Boolean) 
     }
 
     companion object {
-        const val LAYOUT_WIDTH = FONT_SIZE * 27
+        const val LAYOUT_WIDTH = FONT_SIZE * 29
     }
 
 }

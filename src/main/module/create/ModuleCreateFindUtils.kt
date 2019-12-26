@@ -46,10 +46,10 @@ object ModuleCreateFindUtils {
             return false
         }
 
-        val moduleServiceFactoryFile = componentDir!!.findFile("ModuleServiceFactory.kt")
+        val ServiceManagerFile = componentDir!!.findFile("ServiceManager.kt")
         val serviceDir = componentDir!!.findSubdirectory("service")
-        if (null == moduleServiceFactoryFile) {
-            showCommonDialog("找不到 ModuleServiceFactory.kt")
+        if (null == ServiceManagerFile) {
+            showCommonDialog("找不到 ServiceManager.kt")
             return false
         }
         if (null == serviceDir) {
@@ -63,7 +63,7 @@ object ModuleCreateFindUtils {
             return false
         }
 
-        val moduleServiceFactoryText = moduleServiceFactoryFile.text
+        val moduleServiceFactoryText = ServiceManagerFile.text
 
         if (moduleServiceFactoryText.contains(newModuleName + "Service")) {
             showCommonDialog("有重复 ModuleServiceFactory配置")
@@ -80,8 +80,8 @@ object ModuleCreateFindUtils {
 
         val index = resultString.indexOf("//module service end,do not delete this")
         resultString.insert(index, "val " + newModuleName + "Service by lazy { initModule(I" + newModuleName.toCustomUpCase() + "ModuleService.APPLICATION) as? I" + newModuleName.toCustomUpCase() + "ModuleService }\n\n  ")
-        moduleServiceFactoryFile.viewProvider.document?.setText(resultString.toString())
-        FileFormatUtils.format(project, moduleServiceFactoryFile)
+        ServiceManagerFile.viewProvider.document?.setText(resultString.toString())
+        FileFormatUtils.format(project, ServiceManagerFile)
 
         //创建IXXXModuleService
         FileIOUtils2.readTemplateFile("/newModule/IModuleService.txt", action)

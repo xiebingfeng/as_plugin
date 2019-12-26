@@ -13,6 +13,7 @@ class $classNameFragment : BaseLceFragment<$classNameViewModel>(){
           $toolbar
     )$toolCustom
     $contentInitViewModel
+    $initBeforeLceInitialization
     override fun initView() {$initView
     }
     $contentInitClick $contentInitFirstLoad $contentNewInstance

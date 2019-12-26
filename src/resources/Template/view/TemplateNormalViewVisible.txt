@@ -1,0 +1,4 @@
+ override fun onLoadFirstDataWhenVisible(): Boolean {
+        viewModel?.loadFirstComingData()
+        return true
+ }
